@@ -1,7 +1,7 @@
 from enum import Enum
 
 from src.engine.errors import ShipAlreadyPlaced, InvalidPlacement, Overlapping, OutsideShot, AlreadyShot
-from src.engine.ships import Ship, Coordinate
+from src.engine.ships import Ship, Coordinate, standard_ships
 from src.engine.shot import ShotResult, ShotOutcome
 
 
@@ -23,7 +23,7 @@ They can also render themselves
 class Board:
     def __init__(self, size=10):
         self.size = size
-        self.ships = []
+        self.ships = standard_ships()
         self.occupied: set[Coordinate] = set()
         self.shots_taken: set[Coordinate] = set()
 
@@ -31,7 +31,7 @@ class Board:
         if ship.is_placed():
             raise ShipAlreadyPlaced(f"Ship {ship.name} is already placed")
 
-        positions = self._compute_positions(start, ship.size, horizontal)
+        positions = _compute_positions(start, ship.size, horizontal)
 
         for r, c in positions:
             if not (0 <= r < self.size and 0 <= c < self.size):
@@ -41,7 +41,6 @@ class Board:
             raise Overlapping(f"Ship {ship.name} cannot be placed here, as another ship occupies this space")
 
         ship.place(positions)
-        self.ships.append(ship)
         self.occupied.update(positions)
 
     def receive_fire(self, coord: Coordinate) -> ShotResult:
@@ -96,16 +95,21 @@ class Board:
 
         return grid
 
-    def _compute_positions(self, start: Coordinate, size: int, horizontal: bool) -> set[Coordinate]:
-        row, col = start
-        positions = set()
+    # TODO test
+    def get_ship_by_name(self, name) -> Ship | None:
+        return next((ship for ship in self.ships if ship.name.lower() == name), None)
 
-        for i in range(size):
-            if horizontal:
-                col += i
-            else:
-                row += i
 
-            positions.add((row, col))
+def _compute_positions(start: Coordinate, size: int, horizontal: bool) -> set[Coordinate]:
+    row, col = start
+    positions = set()
 
-        return positions
+    for i in range(size):
+        if horizontal:
+            col += i
+        else:
+            row += i
+
+        positions.add((row, col))
+
+    return positions

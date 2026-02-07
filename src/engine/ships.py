@@ -11,6 +11,8 @@ This class represents the ships.
 They know nothing about the board, they don't validate their placement.
 They just know their length, and they know where they have been hit.
 """
+
+
 @dataclass
 class Ship:
     name: str

@@ -40,3 +40,15 @@ class TurnError(Exception):
 
 class MissingPlayer(Exception):
     pass
+
+
+class CommandParseError(Exception):
+    pass
+
+
+class CommandNotFoundError(Exception):
+    pass
+
+
+class InvalidShipName(Exception):
+    pass
