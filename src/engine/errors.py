@@ -20,3 +20,23 @@ class OutsideShot(Exception):
 
 class InvalidPositions(Exception):
     pass
+
+
+class PlayerAlreadyExists(Exception):
+    pass
+
+
+class PlayerCountError(Exception):
+    pass
+
+
+class WrongPhase(Exception):
+    pass
+
+
+class TurnError(Exception):
+    pass
+
+
+class MissingPlayer(Exception):
+    pass

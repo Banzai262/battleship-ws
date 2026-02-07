@@ -4,17 +4,20 @@ from src.engine.errors import ShipAlreadyPlaced, InvalidPlacement, Overlapping, 
 from src.engine.ships import Ship, Coordinate
 from src.engine.shot import ShotResult, ShotOutcome
 
-"""
-Used by the board to keep track of whatever happens in a given state
-"""
-
 
 class CellState(Enum):
-    # todo mettre différents char pour représenter ces états
     EMPTY = 0
     SHIP = 1
     HIT = 2
     MISS = 3
+
+
+"""
+This class represents the board.
+
+They keep track of shots and ships placement.
+They can also render themselves
+"""
 
 
 class Board:
