@@ -95,20 +95,22 @@ class Board:
 
         return grid
 
-    # TODO test
     def get_ship_by_name(self, name) -> Ship | None:
-        return next((ship for ship in self.ships if ship.name.lower() == name), None)
+        return next((ship for ship in self.ships if ship.name.lower() == name.lower()), None)
+
+    def all_ships_placed(self) -> bool:
+        return len(self.occupied) == sum(ship.size for ship in self.ships)  # the sum of all ships' length
 
 
 def _compute_positions(start: Coordinate, size: int, horizontal: bool) -> set[Coordinate]:
     row, col = start
-    positions = set()
+    positions = {start}
 
-    for i in range(size):
+    for i in range(size - 1):
         if horizontal:
-            col += i
+            col += 1
         else:
-            row += i
+            row += 1
 
         positions.add((row, col))
 

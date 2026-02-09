@@ -3,33 +3,33 @@ from src.engine.errors import CommandNotFoundError, InvalidShipName
 from src.engine.game import PlayerId, Game
 
 """
-This command handler is independent from transport layer, so both CLI and websocket can use this
+The class translates commands to game methods
+All required verification have been done previously before calling the handler
 """
 
 
 class CommandHandler:
-    def __init__(self, game: Game, player_id: PlayerId):
+    def __init__(self, game: Game):
         self.game = game
-        self.player_id = player_id
 
-    def handle(self, command: Command) -> dict:
+    def execute(self, player_id: PlayerId, command: Command) -> dict:
         match command:
             case PlaceShipCommand(ship_name, start, horizontal):
-                ship = self.game.boards[self.player_id].get_ship_by_name(ship_name)
+                ship = self.game.boards[player_id].get_ship_by_name(ship_name)
 
                 if ship is None:
                     raise InvalidShipName(f"Ship with name {ship_name} does not exist")
 
-                self.game.place_ship(self.player_id, ship, start, horizontal)
-                return {"status": "ok"}
+                self.game.place_ship(player_id, ship, start, horizontal)
+                return {"status": "ok", "type": "ship_placed"}
 
             case FireCommand(coord):
-                result = self.game.fire(self.player_id, coord)
-                return {"status": "ok", "result": result}  # todo valider
+                result = self.game.fire(player_id, coord)
+                return {"status": "ok", "type": "shot", "result": result.outcome}  # todo valider
 
             case StartGameCommand():
-                self.game.start(self.player_id)
-                return {"status": "ok"}
+                self.game.start(player_id)
+                return {"status": "ok", "type": "game_started"}
 
             case _:
                 raise CommandNotFoundError(f"Command of type {type(command)} does not exist")
