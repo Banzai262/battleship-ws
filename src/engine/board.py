@@ -100,7 +100,15 @@ class Board:
 
         for ship in self.ships:
             ships_status.append(
-                {"name": ship.name, "size": ship.size, "placed": ship.is_placed(), "sunk": ship.is_sunk()})
+                {
+                    "name": ship.name,
+                    "size": ship.size,
+                    "placed": ship.is_placed(),
+                    "sunk": ship.is_sunk(),
+                    "positions": ship.positions,
+                    "hits": ship.hits
+                }
+            )
 
         return ships_status
 

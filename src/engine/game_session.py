@@ -27,7 +27,7 @@ class GameSession:
 
     def join(self, player_id: PlayerId) -> dict:
         if player_id in self.players:
-            return {"status": "ok", "message": f"Player {player_id} already joined"}
+            return {"status": "error", "message": f"Player {player_id} already joined"}
 
         if len(self.players) >= 2:
             raise PlayerCountError("Two players have already joined")
