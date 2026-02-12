@@ -76,6 +76,9 @@ class GameSession:
     def get_view(self, player_id: PlayerId) -> dict:
         return self.game.get_view(player_id)
 
+    def get_ship_status(self, player_id: PlayerId) -> list:
+        return self.game.get_ship_status(player_id)
+
     def _handle_setup(self, player_id: PlayerId, command: Command):
         if not isinstance(command, PlaceShipCommand):
             return {"status": "error", "message": "You must place ships first"}

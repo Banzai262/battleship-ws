@@ -92,6 +92,9 @@ class Game:
             "enemy_board": self.boards[opponent].render(reveal_ships=False),
         }
 
+    def get_ship_status(self, player_id: PlayerId) -> list:
+        return self.boards[player_id].render_ships()
+
     def _check_win(self, defending_player: PlayerId):
         board = self.boards[defending_player]
 
@@ -99,9 +102,9 @@ class Game:
             self.phase = GamePhase.FINISHED
             self.winner = self._get_opponent(defending_player)
 
-    def _get_opponent(self, player_id: PlayerId) -> PlayerId:
+    def _get_opponent(self, player_id: PlayerId) -> PlayerId | None:
         for pid in self.boards.keys():
             if pid != player_id:
                 return pid
-        raise TurnError("Opponent not found")
+        return None
 

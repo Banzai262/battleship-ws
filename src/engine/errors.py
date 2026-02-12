@@ -52,3 +52,7 @@ class CommandNotFoundError(Exception):
 
 class InvalidShipName(Exception):
     pass
+
+
+class InvalidCode(Exception):
+    pass

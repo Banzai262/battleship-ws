@@ -1,6 +1,6 @@
 import os
 
-from src.cli.render import render_grid
+from src.shared.render import render_grid
 from src.commands.command_parser import parse_command
 from src.engine.errors import CommandParseError
 from src.engine.game import GamePhase
@@ -53,8 +53,13 @@ def hotseat(session: GameSession):
               fire <row> <col>
               start
               view
+              ships
               quit
             """)
+                continue
+
+            if raw == "ships":
+                display_ship_status(session.get_ship_status(player_id))
                 continue
 
             command = parse_command(raw)
@@ -79,3 +84,8 @@ def display(view: dict):
     print("\nEnemy board:")
     print(render_grid(view["enemy_board"]))
     print()
+
+
+def display_ship_status(statuses: list):
+    for status in statuses:
+        print(status)

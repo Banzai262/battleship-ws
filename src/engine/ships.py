@@ -37,7 +37,7 @@ class Ship:
         return True
 
     def is_sunk(self) -> bool:
-        return self.hits == self.positions
+        return self.is_placed() and self.hits == self.positions
 
     def is_placed(self) -> bool:
         return len(self.positions) == self.size

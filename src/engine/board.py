@@ -95,6 +95,15 @@ class Board:
 
         return grid
 
+    def render_ships(self) -> list:
+        ships_status = []
+
+        for ship in self.ships:
+            ships_status.append(
+                {"name": ship.name, "size": ship.size, "placed": ship.is_placed(), "sunk": ship.is_sunk()})
+
+        return ships_status
+
     def get_ship_by_name(self, name) -> Ship | None:
         return next((ship for ship in self.ships if ship.name.lower() == name.lower()), None)
 
