@@ -18,15 +18,15 @@ class TestPlaceShip(unittest.TestCase):
     def test_cannot_place_ship_if_does_not_fit(self):
         with self.assertRaises(InvalidPlacement):
             ship = Ship("Test", 2)
-            board = Board()
+            board = Board(ships=[ship])
             board.place_ship(ship, (10, 10), True)
 
     def test_ships_cannot_overlap(self):
         with self.assertRaises(Overlapping):
-            board = Board()
-
             ship1 = Ship("One", 2)
             ship2 = Ship("Two", 2)
+
+            board = Board(ships=[ship1, ship2])
 
             board.place_ship(ship1, (0, 0), True)
             board.place_ship(ship2, (0, 0), False)
@@ -51,8 +51,8 @@ class TestReceiveFire(unittest.TestCase):
         assert result.outcome == ShotOutcome.MISS
 
     def test_hit_and_sink(self):
-        board = Board()
         ship = Ship("Test", 2)
+        board = Board(ships=[ship])
         board.place_ship(ship, (0, 0), horizontal=True)
 
         result1 = board.receive_fire((0, 0))
@@ -65,8 +65,9 @@ class TestReceiveFire(unittest.TestCase):
 
 class TestAllShipsSunk(unittest.TestCase):
     def test_all_ships_sunk(self):
-        board = Board()
-        board.place_ship(Ship("One", 2), (0, 0), True)
+        ship = Ship("One", 2)
+        board = Board(ships=[ship])
+        board.place_ship(ship, (0, 0), True)
 
         board.receive_fire((0, 0))
         assert not board.all_ships_sunk()
@@ -83,8 +84,8 @@ class TestRender(unittest.TestCase):
         assert all(cell == CellState.EMPTY for row in grid for cell in row)
 
     def test_render_hits_and_misses(self):
-        board = Board(3)
         ship = Ship("One", 1)
+        board = Board(3, ships=[ship])
         board.place_ship(ship, (1, 1), horizontal=True)
 
         board.receive_fire((0, 0))  # miss
@@ -96,8 +97,8 @@ class TestRender(unittest.TestCase):
         assert grid[1][1] == CellState.HIT
 
     def test_render_reveal_ships(self):
-        board = Board(3)
         ship = Ship("One", 1)
+        board = Board(3, ships=[ship])
         board.place_ship(ship, (1, 1), horizontal=True)
 
         grid = board.render(reveal_ships=False)

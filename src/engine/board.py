@@ -21,9 +21,11 @@ They can also render themselves
 
 
 class Board:
-    def __init__(self, size=10):
+    def __init__(self, size=10, ships=None):
+        if ships is None:
+            ships = standard_ships()
         self.size = size
-        self.ships = standard_ships()
+        self.ships = ships
         self.occupied: set[Coordinate] = set()
         self.shots_taken: set[Coordinate] = set()
 

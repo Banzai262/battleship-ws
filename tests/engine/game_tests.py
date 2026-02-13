@@ -95,9 +95,10 @@ class TestFire(unittest.TestCase):
     def test_turn_switching(self):
         game = _setup_game(start_game=False)
 
-        ship = Ship("S_p1", 1)
-        game.place_ship("p1", ship, (0, 0), True)
-        game.place_ship("p2", Ship("S_p2", 2), (1, 1), False)
+        destroyer = game.boards["p1"].get_ship_by_name("destroyer")
+        cruiser = game.boards["p2"].get_ship_by_name("cruiser")
+        game.place_ship("p1", destroyer, (0, 0), True)
+        game.place_ship("p2", cruiser, (1, 1), False)
 
         game.start("p1")
 
@@ -108,15 +109,24 @@ class TestFire(unittest.TestCase):
 
     def test_win_condition(self):
         game = _setup_game(start_game=False)
+        game.boards["p1"].ships = [game.boards["p1"].get_ship_by_name("cruiser")]
+        game.boards["p2"].ships = [game.boards["p2"].get_ship_by_name("destroyer")]
 
-        ship = Ship("S_p1", 1)
-        game.place_ship("p1", ship, (0, 0), True)
-        game.place_ship("p2", Ship("S_p2", 1), (1, 1), False)
+        cruiser = game.boards["p1"].get_ship_by_name("cruiser")
+        destroyer = game.boards["p2"].get_ship_by_name("destroyer")
+
+        game.place_ship("p1", cruiser, (0, 0), True)
+        game.place_ship("p2", destroyer, (1, 1), False)
 
         game.start("p1")
 
         result = game.fire("p1", (1, 1))
+        assert result.outcome == ShotOutcome.HIT
+
+        game.fire("p2", (0, 0))
+        result = game.fire("p1", (2, 1))
         assert result.outcome == ShotOutcome.SUNK
+
         assert game.phase == GamePhase.FINISHED
 
 
