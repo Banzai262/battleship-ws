@@ -15,11 +15,11 @@ class GamePhase(Enum):
 
 
 class GameEvent(Enum):
-    PHASE_CHANGED = auto() # done
-    SHIPS_PLACED = auto() # done
+    PHASE_CHANGED = auto()
+    SHIPS_PLACED = auto()
     TURN_CHANGED = auto()
-    SHOT_RESULT = auto() # done
-    GAME_WON = auto() # done
+    SHOT_RESULT = auto()
+    GAME_WON = auto()
 
 
 # Alias so that we know what the string represents

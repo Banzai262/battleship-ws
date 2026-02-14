@@ -24,7 +24,7 @@ class GameRegistry:
 
         session = self.games[code]
 
-        if len(session.players) >= 2:
+        if len(session.connected) >= 2:
             raise PlayerCountError("Required number of players reached")
 
         return session

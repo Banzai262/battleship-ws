@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from src.commands.command_parser import parse_command
 from src.engine.game import GamePhase
@@ -12,14 +14,17 @@ registry = GameRegistry()
 async def websocket_endpoint(ws: WebSocket):
     print("New WebSocket connection")
 
-    await ws.accept()
-
-    await ws.send_text(
-        "Welcome to Battleship-ws\n"
-        "Type 'create' or 'join <code>'"
-    )
+    session = None
+    player_id = None
 
     try:
+        await ws.accept()
+
+        await ws.send_text(
+            "Welcome to Battleship-ws\n"
+            "Type 'create' or 'join <code>'"
+        )
+
         first_msg = await ws.receive_text()
         parts = first_msg.strip().split()
 
@@ -45,8 +50,11 @@ async def websocket_endpoint(ws: WebSocket):
                     result = await session.join(player_id)
                     session.connections[player_id] = ws
 
-                    # Session broadcasts state transition (event-driven)
-                    if result["status"] == "ok" and session.is_ready():
+                    if result.get("reconnected"):
+                        await session.broadcast(f"{player_id} is back")
+                        await ws.send_text(f"Welcome back {player_id}, you have been reconnected")
+                        break
+                    elif result["status"] == "ok" and session.is_ready():
                         session.ready_event.set()
                         await session.broadcast("Both players connected. Ready to start the game.")
                         break
@@ -103,14 +111,30 @@ async def websocket_endpoint(ws: WebSocket):
                 if result["status"] == "error":
                     await ws.send_text(f"Error: {result['message']}")
 
-            except Exception as e:
-                await ws.send_text(str(e))
+            except WebSocketDisconnect:
+                print(f"{player_id} disconnected")
 
-    except WebSocketDisconnect:
-        print("Disconnected")
+                if session and player_id:
+                    session.handle_disconnect(player_id)
+                    await session.broadcast(f"{player_id} is disconnected")
+                    await ws.close(reason="Client disconnected")
+
+            except asyncio.CancelledError:
+                print(f"{player_id} cancelled / disconnected")
+                if session and player_id:
+                    session.handle_disconnect(player_id)
+                    await session.broadcast(f"{player_id} is disconnected")
+                    await ws.close(reason="Client disconnected")
+
+            except Exception as e:
+                print(f"error {e}")
+                if ws.client_state == ws.client_state.CONNECTED:
+                    await ws.send_text(str(e))
 
     except Exception as e:
-        await ws.send_text(str(e))
+        print(f"error is {e}")
+        if ws.client_state == ws.client_state.CONNECTED:
+            await ws.send_text(str(e))
 
 
 async def ask_name(ws: WebSocket) -> str:

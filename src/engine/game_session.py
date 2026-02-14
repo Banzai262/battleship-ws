@@ -1,5 +1,6 @@
 import asyncio
 import random
+import time
 from enum import Enum
 
 from fastapi import WebSocket
@@ -27,15 +28,24 @@ class GameSession:
         self.players: list[PlayerId] = []
         self.ready: set[PlayerId] = set()
         self.connections: dict[PlayerId, WebSocket] = {}
+        self.connected: set[PlayerId] = set()
+        self.last_activity = time.time()
         self.ready_event = asyncio.Event()
+        self.game_phase_at_disconnect = GamePhase.WAITING_PLAYERS
 
     async def join(self, player_id: PlayerId) -> dict:
         if player_id in self.players:
+            if player_id not in self.connected:
+                # reconnection
+                self.connected.add(player_id)
+                self.game.phase = self.game_phase_at_disconnect
+                return {"status": "ok", "reconnected": True}
             return {"status": "error", "message": f"Player {player_id} already joined"}
 
         if len(self.players) >= 2:
             raise PlayerCountError("Two players have already joined")
 
+        self.stamp()
         self.players.append(player_id)
         self.game.add_player(player_id)
 
@@ -54,6 +64,7 @@ class GameSession:
 
     async def handle_command(self, player_id: PlayerId, command: Command) -> dict:
         phase = self.game.phase
+        self.stamp()
 
         try:
             if phase == GamePhase.SETUP:
@@ -69,6 +80,12 @@ class GameSession:
                 "status": "error",
                 "message": str(e)
             }
+
+    def handle_disconnect(self, player_id: PlayerId):
+        self.connected.discard(player_id)
+        del self.connections[player_id]
+        self.game_phase_at_disconnect = self.game.phase
+        self.game.phase = GamePhase.WAITING_PLAYERS
 
     def get_prompt(self, player_id: PlayerId) -> str:
         match self.game.phase:
@@ -86,6 +103,9 @@ class GameSession:
                 if self.game.winner == player_id:
                     return "Congrats, you won!"
                 return "You lost"
+
+    def stamp(self):
+        self.last_activity = time.time()
 
     # TODO I feel like la GameSession ne devrait pas connaitre les websockets -> devrait avoir un broadcast service
     # ou encore le game registry pourrait garder les connections, faire les reco, et faire le broadcast
