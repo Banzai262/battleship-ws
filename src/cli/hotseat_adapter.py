@@ -12,11 +12,11 @@ def clear():
 
 
 # TODO peut-être render le UI un peu plus beau, avec le nom des colonnes
-def hotseat(session: GameSession):
+async def hotseat(session: GameSession):
     players = ["Guillaume", "Mariko"]
 
     for pid in players:
-        session.join(pid)
+        await session.join(pid)
 
     current = 0
 
@@ -63,7 +63,7 @@ def hotseat(session: GameSession):
                 continue
 
             command = parse_command(raw)
-            response = session.handle_command(player_id, command)
+            response = await session.handle_command(player_id, command)
 
             if response["status"] == "error":
                 print(response["message"])

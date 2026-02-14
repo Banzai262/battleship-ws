@@ -46,69 +46,74 @@ class TestPlaceShip(unittest.TestCase):
     def test_place_ship(self):
         game = Game()
         game.add_player("test")
+        game.add_player("test2")
+        game.phase = GamePhase.SETUP
         game.place_ship("test", Ship("One", 1), (0, 0), True)
         assert (0, 0) in game.boards["test"].occupied
 
 
-class TestStart(unittest.TestCase):
-    def test_start_when_incorrect_phase_should_raise(self):
+class TestStart(unittest.IsolatedAsyncioTestCase):
+    async def test_start_when_incorrect_phase_should_raise(self):
         with self.assertRaises(WrongPhase):
             game = Game()
             game.phase = GamePhase.IN_PROGRESS
-            game.start("test")
+            await game.start("test")
 
-    def test_start_when_not_two_players_should_raise(self):
+    async def test_start_when_not_two_players_should_raise(self):
         with self.assertRaises(PlayerCountError):
             game = Game()
             game.add_player("test")
-            game.start("test")
+            game.phase = GamePhase.SETUP
+            await game.start("test")
 
-    def test_start_when_absent_player_should_raise(self):
+    async def test_start_when_absent_player_should_raise(self):
         with self.assertRaises(MissingPlayer):
             game = Game()
             game.add_player("present")
             game.add_player("present2")
-            game.start("absent")
+            game.phase = GamePhase.SETUP
+            await game.start("absent")
 
-    def test_start(self):
+    async def test_start(self):
         game = Game()
         game.add_player("1")
         game.add_player("2")
-        game.start("1")
+        game.phase = GamePhase.SETUP
+        await game.start("1")
 
         assert game.phase == GamePhase.IN_PROGRESS
         assert game.current_turn == "1"
 
 
-class TestFire(unittest.TestCase):
-    def test_fire_when_incorrect_phase_should_raise(self):
+class TestFire(unittest.IsolatedAsyncioTestCase):
+    async def test_fire_when_incorrect_phase_should_raise(self):
         with self.assertRaises(WrongPhase):
-            game = _setup_game()
+            game = await _setup_game()
             game.phase = GamePhase.SETUP
-            game.fire("p1", (0, 0))
+            await game.fire("p1", (0, 0))
 
-    def test_fire_when_not_player_turn_should_raise(self):
+    async def test_fire_when_not_player_turn_should_raise(self):
         with self.assertRaises(TurnError):
-            game = _setup_game()
-            game.fire("p2", (0, 0))
+            game = await _setup_game()
+            await game.fire("p2", (0, 0))
 
-    def test_turn_switching(self):
-        game = _setup_game(start_game=False)
+    async def test_turn_switching(self):
+        game = await _setup_game(start_game=False)
 
         destroyer = game.boards["p1"].get_ship_by_name("destroyer")
         cruiser = game.boards["p2"].get_ship_by_name("cruiser")
         game.place_ship("p1", destroyer, (0, 0), True)
         game.place_ship("p2", cruiser, (1, 1), False)
 
-        game.start("p1")
+        await game.start("p1")
 
-        result = game.fire("p1", (1, 1))
+        result = await game.fire("p1", (1, 1))
         assert result.outcome == ShotOutcome.HIT
         assert game.current_turn == "p2"
         assert game.phase == GamePhase.IN_PROGRESS
 
-    def test_win_condition(self):
-        game = _setup_game(start_game=False)
+    async def test_win_condition(self):
+        game = await _setup_game(start_game=False)
         game.boards["p1"].ships = [game.boards["p1"].get_ship_by_name("cruiser")]
         game.boards["p2"].ships = [game.boards["p2"].get_ship_by_name("destroyer")]
 
@@ -118,24 +123,25 @@ class TestFire(unittest.TestCase):
         game.place_ship("p1", cruiser, (0, 0), True)
         game.place_ship("p2", destroyer, (1, 1), False)
 
-        game.start("p1")
+        await game.start("p1")
 
-        result = game.fire("p1", (1, 1))
+        result = await game.fire("p1", (1, 1))
         assert result.outcome == ShotOutcome.HIT
 
-        game.fire("p2", (0, 0))
-        result = game.fire("p1", (2, 1))
+        await game.fire("p2", (0, 0))
+        result = await game.fire("p1", (2, 1))
         assert result.outcome == ShotOutcome.SUNK
 
         assert game.phase == GamePhase.FINISHED
 
 
-def _setup_game(start_game=True) -> Game:
+async def _setup_game(start_game=True) -> Game:
     game = Game()
     game.add_player("p1")
     game.add_player("p2")
+    game.phase = GamePhase.SETUP
     if start_game:
-        game.start("p1")
+        await game.start("p1")
     return game
 
 

@@ -9,16 +9,18 @@ CELL_MAP = {
 
 
 def render_grid(grid) -> str:
-    lines = []
+    lines = [f"    " + " ".join([" " + str(n) for n in range(0, 10)])]
+    i = 0
     for row in grid:
-        lines.append(" ".join(CELL_MAP[cell] for cell in row))
+        lines.append(f"  {i} " + " ".join(CELL_MAP[cell] for cell in row))
+        i += 1
     return "\n".join(lines)
 
 
 def render_ship_status(statuses) -> str:
     lines = []
     for status in statuses:
-        line = f"Ship '{status['name']}. (size {status['size']}): "
+        line = f"Ship '{status['name']}. (size {status['size']}):"
 
         state = ""
         for coord in status["positions"]:
@@ -27,6 +29,6 @@ def render_ship_status(statuses) -> str:
             else:
                 state += "🚢"
 
-        lines.append(line + state)
+        lines.append(f"{line} {state} (Placed: {status['placed']}) (Sunk: {status['sunk']})")
 
     return "\n".join(lines)

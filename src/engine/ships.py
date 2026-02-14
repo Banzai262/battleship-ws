@@ -51,3 +51,10 @@ def standard_ships() -> list[Ship]:
         Ship(name="Submarine", size=3),
         Ship(name="Destroyer", size=2),
     ]
+
+
+def test_ships() -> list[Ship]:
+    return [
+        Ship(name="a", size=1),
+        Ship(name="b", size=2)
+    ]

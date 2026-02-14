@@ -9,9 +9,9 @@ class GameRegistry:
     def __init__(self):
         self.games: dict[str, GameSession] = {}
 
-    def create_game(self) -> tuple[str, GameSession]:
+    def create_game(self, dev_mode) -> tuple[str, GameSession]:
         code = generate_code()
-        session = GameSession()
+        session = GameSession(dev_mode)
         self.games[code] = session
         return code, session
 

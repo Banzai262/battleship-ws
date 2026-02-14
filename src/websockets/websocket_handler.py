@@ -1,7 +1,6 @@
-import asyncio
-
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from src.commands.command_parser import parse_command
+from src.engine.game import GamePhase
 from src.shared.render import render_grid, render_ship_status
 from src.websockets.game_registry import GameRegistry
 
@@ -16,7 +15,7 @@ async def websocket_endpoint(ws: WebSocket):
     await ws.accept()
 
     await ws.send_text(
-        "Welcome to Battleship\n"
+        "Welcome to Battleship-ws\n"
         "Type 'create' or 'join <code>'"
     )
 
@@ -26,10 +25,12 @@ async def websocket_endpoint(ws: WebSocket):
 
         match parts[0]:
             case "create":
-                code, session = registry.create_game()
+                code, session = registry.create_game(dev_mode=True)
                 player_id = await ask_name(ws)
-                session.join(player_id)
+                await session.join(player_id)
+                session.connections[player_id] = ws
                 await ws.send_text(f"Game created\nCode: {code}")
+                await ws.send_text("Waiting for opponent to join...")
 
             case "join":
                 if len(parts) != 2:
@@ -41,9 +42,13 @@ async def websocket_endpoint(ws: WebSocket):
 
                 while True:
                     player_id = await ask_name(ws)
-                    result = session.join(player_id)
+                    result = await session.join(player_id)
+                    session.connections[player_id] = ws
 
-                    if result["status"] == "ok":
+                    # Session broadcasts state transition (event-driven)
+                    if result["status"] == "ok" and session.is_ready():
+                        session.ready_event.set()
+                        await session.broadcast("Both players connected. Ready to start the game.")
                         break
                     await ws.send_text(f"Name '{player_id}' is already used, please use a different name")
 
@@ -53,26 +58,31 @@ async def websocket_endpoint(ws: WebSocket):
                 await ws.send_text("Invalid command. Please start again")
                 return
 
-        while len(session.players) < 2:
-            await ws.send_text("Waiting for opponent to join...")
-            await asyncio.sleep(2)
+        await session.ready_event.wait()
 
-        await ws.send_text("Ready to start the game.")
-
-        # todo arranger la loop pour l'affichage notamment
-        # todo broadcast
         # todo bref voir le chat pour les possibles améliorations (pas de blocking, reconnection, etc)
         while True:
             try:
                 view = session.get_view(player_id)
                 await display(view, ws)
+                await session.broadcast_events()
+
+                if session.game.phase == GamePhase.FINISHED:
+                    # todo potentiellement demander pour rejouer
+                    await ws.send_text("Press Enter to exit")
+                    await ws.receive_text()
+                    await session.broadcast(f"{player_id} has exited")
+                    break
+
+                prompt = session.get_prompt(player_id)
+                await ws.send_text(prompt)
 
                 text = await ws.receive_text()
 
                 match text:
                     case "quit" | "exit":
                         await ws.send_text("Exiting")
-                        # TODO broadcast que ce user a quitté
+                        await session.broadcast(f"Player {player_id} exited the game.")
                         break
                     case "help":
                         await show_help(ws)
@@ -87,7 +97,7 @@ async def websocket_endpoint(ws: WebSocket):
 
                 command = parse_command(text)
 
-                result = session.handle_command(player_id, command)
+                result = await session.handle_command(player_id, command)
 
                 if result["status"] == "error":
                     await ws.send_text(f"Error: {result['message']}")

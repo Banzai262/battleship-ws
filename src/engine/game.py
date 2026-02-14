@@ -1,37 +1,50 @@
-from enum import Enum
+import asyncio
+from enum import Enum, auto
 
 from src.engine.board import Board
 from src.engine.errors import PlayerAlreadyExists, PlayerCountError, WrongPhase, TurnError, MissingPlayer
-from src.engine.ships import Coordinate, Ship
+from src.engine.ships import Coordinate, Ship, test_ships
 from src.engine.shot import ShotResult, ShotOutcome
 
 
 class GamePhase(Enum):
+    WAITING_PLAYERS = "waiting_players"
     SETUP = "setup"
     IN_PROGRESS = "in_progress"
     FINISHED = "finished"
+
+
+class GameEvent(Enum):
+    PHASE_CHANGED = auto() # done
+    SHIPS_PLACED = auto() # done
+    TURN_CHANGED = auto()
+    SHOT_RESULT = auto() # done
+    GAME_WON = auto() # done
 
 
 # Alias so that we know what the string represents
 PlayerId = str
 
 """
-This class coordinates the players, their board, the turns, and the win condition
+This class coordinates the players, their board, the turns, and the win condition.
+It creates events when stuff like phase-change, turn-change, game-won happens.
 
 It is UI-agnostic
 """
 
 
 class Game:
-    def __init__(self, size: int = 10):
+    def __init__(self, size: int = 10, dev=False):
+        self.is_dev = dev
         self.size = size
         self.boards: dict[PlayerId, Board] = {}
-        self.phase = GamePhase.SETUP
+        self.phase = GamePhase.WAITING_PLAYERS
         self.current_turn: PlayerId | None = None
         self.winner: PlayerId | None = None
+        self.events: asyncio.Queue[dict] = asyncio.Queue()
 
     def add_player(self, player_id: PlayerId):
-        if self.phase != GamePhase.SETUP:
+        if self.phase != GamePhase.WAITING_PLAYERS:
             raise WrongPhase("Cannot add players after game start")
 
         if player_id in self.boards:
@@ -40,7 +53,10 @@ class Game:
         if len(self.boards) >= 2:
             raise PlayerCountError("Game already has two players")
 
-        self.boards[player_id] = Board(self.size)
+        if self.is_dev:
+            self.boards[player_id] = Board(self.size, ships=test_ships())
+        else:
+            self.boards[player_id] = Board(self.size)
 
     def place_ship(self, player_id: PlayerId, ship: Ship, start: Coordinate, horizontal: bool, ):
         if self.phase != GamePhase.SETUP:
@@ -48,7 +64,7 @@ class Game:
 
         self.boards[player_id].place_ship(ship, start, horizontal)
 
-    def start(self, first_player: PlayerId):
+    async def start(self, first_player: PlayerId):
         if self.phase != GamePhase.SETUP:
             raise WrongPhase("Game already started")
 
@@ -59,9 +75,13 @@ class Game:
             raise MissingPlayer("Invalid starting player")
 
         self.phase = GamePhase.IN_PROGRESS
+        await self.events.put({
+            "type": GameEvent.PHASE_CHANGED,
+            "message": "All ships placed. The battle begins!"
+        })
         self.current_turn = first_player
 
-    def fire(self, player_id: PlayerId, coord: Coordinate) -> ShotResult:
+    async def fire(self, player_id: PlayerId, coord: Coordinate) -> ShotResult:
         if self.phase != GamePhase.IN_PROGRESS:
             raise WrongPhase("Game is not in progress")
 
@@ -74,7 +94,7 @@ class Game:
         result = board.receive_fire(coord)
 
         if result.outcome == ShotOutcome.SUNK:
-            self._check_win(opponent)
+            await self._check_win(opponent)
 
         if self.phase != GamePhase.FINISHED:
             self.current_turn = opponent
@@ -95,7 +115,7 @@ class Game:
     def get_ship_status(self, player_id: PlayerId) -> list:
         return self.boards[player_id].render_ships()
 
-    def _check_win(self, defending_player: PlayerId):
+    async def _check_win(self, defending_player: PlayerId):
         board = self.boards[defending_player]
 
         if board.all_ships_sunk():
@@ -107,4 +127,3 @@ class Game:
             if pid != player_id:
                 return pid
         return None
-

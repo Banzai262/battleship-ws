@@ -12,7 +12,7 @@ class CommandHandler:
     def __init__(self, game: Game):
         self.game = game
 
-    def execute(self, player_id: PlayerId, command: Command) -> dict:
+    async def execute(self, player_id: PlayerId, command: Command) -> dict:
         match command:
             case PlaceShipCommand(ship_name, start, horizontal):
                 ship = self.game.boards[player_id].get_ship_by_name(ship_name)
@@ -24,11 +24,11 @@ class CommandHandler:
                 return {"status": "ok", "type": "ship_placed"}
 
             case FireCommand(coord):
-                result = self.game.fire(player_id, coord)
+                result = await self.game.fire(player_id, coord)
                 return {"status": "ok", "type": "shot", "result": result.outcome}  # todo valider
 
             case StartGameCommand():
-                self.game.start(player_id)
+                await self.game.start(player_id)
                 return {"status": "ok", "type": "game_started"}
 
             case _:
