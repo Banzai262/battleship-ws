@@ -56,3 +56,7 @@ class InvalidShipName(Exception):
 
 class InvalidCode(Exception):
     pass
+
+
+class TooManyGames(Exception):
+    pass

@@ -72,6 +72,7 @@ async def websocket_endpoint(ws: WebSocket):
                     await ws.send_text("Press Enter to exit")
                     await ws.receive_text()
                     await session.broadcast(f"{player_id} has exited")
+                    del registry.games[code]
                     break
 
                 prompt = session.get_prompt(player_id)
@@ -107,6 +108,9 @@ async def websocket_endpoint(ws: WebSocket):
 
     except WebSocketDisconnect:
         print("Disconnected")
+
+    except Exception as e:
+        await ws.send_text(str(e))
 
 
 async def ask_name(ws: WebSocket) -> str:
