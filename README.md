@@ -7,9 +7,11 @@ You can install a Websocket client on Windows by running this command: `npm inst
 
 Run en faisant ` fastapi dev .\src\websockets\websocket_handler.py --host 0.0.0.0 --port 12345` (dev ou run)
 
+S'y connecter en faisant `wscat -c wss://battleship.gsimard.duckdns.org:8443/ws --no-check` (ne pas publier ceci sur github)
+
 ### Améliorations possibles dans le futur (voir chatgpt pour comment faire)
 * spectators
-* reconnection**
 * chat**
 * move history
 * server-side logging
+* some bugs to fix still

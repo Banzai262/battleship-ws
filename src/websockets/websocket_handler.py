@@ -14,9 +14,6 @@ registry = GameRegistry()
 async def websocket_endpoint(ws: WebSocket):
     print("New WebSocket connection")
 
-    session = None
-    player_id = None
-
     try:
         await ws.accept()
 
@@ -30,7 +27,7 @@ async def websocket_endpoint(ws: WebSocket):
 
         match parts[0]:
             case "create":
-                code, session = registry.create_game(dev_mode=True)
+                code, session = registry.create_game(dev_mode=False)
                 player_id = await ask_name(ws)
                 await session.join(player_id)
                 session.connections[player_id] = ws
@@ -68,7 +65,6 @@ async def websocket_endpoint(ws: WebSocket):
 
         await session.ready_event.wait()
 
-        # todo bref voir le chat pour les possibles améliorations (pas de blocking, reconnection, etc)
         while True:
             try:
                 view = session.get_view(player_id)
@@ -93,6 +89,7 @@ async def websocket_endpoint(ws: WebSocket):
                     case "quit" | "exit":
                         await ws.send_text("Exiting")
                         await session.broadcast(f"Player {player_id} exited the game.")
+                        del registry.games[code]
                         break
                     case "help":
                         await show_help(ws)
