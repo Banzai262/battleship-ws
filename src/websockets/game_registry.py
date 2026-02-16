@@ -1,8 +1,10 @@
+import asyncio
 import secrets
 import string
 
 from src.engine.errors import InvalidCode, PlayerCountError, TooManyGames
 from src.engine.game_session import GameSession
+
 
 # TODO tests
 class GameRegistry:
@@ -28,6 +30,25 @@ class GameRegistry:
             raise PlayerCountError("Required number of players reached")
 
         return session
+
+    async def cleanup_loop(self):
+        while True:
+            await asyncio.sleep(60)
+
+            expired_codes = [
+                code for code, session in list(self.games.items())
+                if session.is_expired()
+            ]
+
+            for code in expired_codes:
+                session = self.games.get(code)
+                if not session:
+                    continue
+
+                await session.broadcast("Disconnecting because of inactivity")
+                await session.disconnect_all("Inactivity")
+
+                del self.games[code]
 
 
 def generate_code(length=6) -> str:

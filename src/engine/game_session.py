@@ -21,6 +21,10 @@ class PlayerState(Enum):
     GAME_OVER = "game_over"
 
 
+SETUP_TIMEOUT = 5 * 60  # 5 minutes
+INACTIVE_TIMEOUT = 15 * 60  # 15 minutes
+
+
 class GameSession:
     def __init__(self, dev=False):
         self.game = Game(dev=dev)
@@ -39,6 +43,7 @@ class GameSession:
                 # reconnection
                 self.connected.add(player_id)
                 self.game.phase = self.game_phase_at_disconnect
+                self.stamp()
                 return {"status": "ok", "reconnected": True}
             return {"status": "error", "message": f"Player {player_id} already joined"}
 
@@ -87,6 +92,10 @@ class GameSession:
         self.game_phase_at_disconnect = self.game.phase
         self.game.phase = GamePhase.WAITING_PLAYERS
 
+    async def disconnect_all(self, reason):
+        for ws in list(self.connections.values()):
+            await ws.close(reason=reason)
+
     def get_prompt(self, player_id: PlayerId) -> str:
         match self.game.phase:
             case GamePhase.SETUP:
@@ -107,8 +116,14 @@ class GameSession:
     def stamp(self):
         self.last_activity = time.time()
 
-    # TODO I feel like la GameSession ne devrait pas connaitre les websockets -> devrait avoir un broadcast service
-    # ou encore le game registry pourrait garder les connections, faire les reco, et faire le broadcast
+    def is_expired(self) -> bool:
+        now = time.time()
+
+        if self.game.phase == GamePhase.WAITING_PLAYERS or self.game.phase == GamePhase.SETUP:
+            return now - self.last_activity > SETUP_TIMEOUT
+
+        return now - self.last_activity > INACTIVE_TIMEOUT
+
     async def broadcast(self, message: str):
         dead = []
 

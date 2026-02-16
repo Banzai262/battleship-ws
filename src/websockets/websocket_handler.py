@@ -80,6 +80,7 @@ async def websocket_endpoint(ws: WebSocket):
                     await ws.send_text("Press Enter to exit")
                     await ws.receive_text()
                     await session.broadcast(f"{player_id} has exited")
+                    await session.disconnect_all(f"Game won by {session.game.winner}")
                     del registry.games[code]
                     break
 
@@ -135,6 +136,11 @@ async def websocket_endpoint(ws: WebSocket):
         print(f"error is {e}")
         if ws.client_state == ws.client_state.CONNECTED:
             await ws.send_text(str(e))
+
+
+@app.on_event("startup")
+async def startup():
+    asyncio.create_task(registry.cleanup_loop())
 
 
 async def ask_name(ws: WebSocket) -> str:
