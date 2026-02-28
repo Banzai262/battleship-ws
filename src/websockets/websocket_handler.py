@@ -10,6 +10,14 @@ app = FastAPI()
 registry = GameRegistry()
 
 
+@app.get("/status")
+def status():
+    return {
+        "status": "ok",
+        "active_games": len(registry.games)
+    }
+
+
 @app.websocket("/ws")
 async def websocket_endpoint(ws: WebSocket):
     print("New WebSocket connection")
