@@ -181,17 +181,17 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 ---
 
 ## Next Steps / Possible Improvements
-- In-game chat
-- Automatic build pipeline
-- Persistent game storage (Redis or database)
-- Spectator mode
-- Multiple simultaneous games per user
-- Authentication (JWT or sessions)
-- Simple web frontend (keeping the engine UI-agnostic)
-- AI opponent
-- Match history and statistics
-- Rate limiting and abuse protection
-- There are still a few bugs to iron out
+- [ ] In-game chat
+- [X] Automatic build pipeline
+- [ ] Persistent game storage (Redis or database)
+- [ ] Spectator mode
+- [ ] Multiple simultaneous games per user
+- [ ] Authentication (JWT or sessions)
+- [ ] Simple web frontend (keeping the engine UI-agnostic)
+- [ ] AI opponent
+- [ ] Match history and statistics
+- [ ] Rate limiting and abuse protection
+- [ ] There are still a few bugs to iron out
 
 
 
