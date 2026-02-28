@@ -127,6 +127,14 @@ When the server is running, you can connect to it with any websocket client:
 wscat -c ws://<ip of the machine running the server>:12345/ws
 ```
 
+### Status endpoint
+
+There is also the endpoint `/status`, which returns `ok` and the number of active games. To reach this endpoint:
+
+```bash
+curl http://<ip of the machine running the server>:12345/status
+```
+
 ---
 
 ## Architecture Overview
