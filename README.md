@@ -190,6 +190,7 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 
 ## Next Steps / Possible Improvements
 - [ ] In-game chat
+- [ ] Random placing of ships
 - [X] Automatic build pipeline
 - [ ] Persistent game storage (Redis or database)
 - [ ] Spectator mode
