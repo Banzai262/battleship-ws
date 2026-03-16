@@ -5,7 +5,7 @@ from enum import Enum
 
 from fastapi import WebSocket
 from src.commands.command_handler import CommandHandler
-from src.commands.commands import Command, PlaceShipCommand, StartGameCommand, FireCommand
+from src.commands.commands import Command, PlaceShipCommand, StartGameCommand, FireCommand, PlaceRandom
 from src.engine.errors import PlayerCountError, TurnError
 from src.engine.game import PlayerId, Game, GamePhase, GameEvent
 
@@ -151,7 +151,7 @@ class GameSession:
         return len(self.players) == 2
 
     async def _handle_setup(self, player_id: PlayerId, command: Command):
-        if not isinstance(command, PlaceShipCommand):
+        if not (isinstance(command, PlaceShipCommand) or isinstance(command, PlaceRandom)):
             return {"status": "error", "message": "You must place ships first"}
 
         result = await self.handler.execute(player_id, command)
@@ -171,7 +171,7 @@ class GameSession:
 
     async def _handle_play(self, player_id: PlayerId, command: Command) -> dict:
         if not isinstance(command, FireCommand):
-            return {"status": "error", "message": "Invalid command"}  # todo raise?
+            return {"status": "error", "message": "Invalid command"}
 
         if self.game.current_turn != player_id:
             raise TurnError(f"It is not your turn, player {player_id}")

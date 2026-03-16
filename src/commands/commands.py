@@ -12,6 +12,12 @@ class PlaceShipCommand:
     horizontal: bool
 
 
+# example: place random (all)
+@dataclass(frozen=True)
+class PlaceRandom:
+    place_all: bool
+
+
 # example: fire <row number> <col number>
 @dataclass(frozen=True)
 class FireCommand:
@@ -23,4 +29,4 @@ class StartGameCommand:
     pass
 
 
-Command = Union[PlaceShipCommand, FireCommand, StartGameCommand]
+Command = Union[PlaceShipCommand, PlaceRandom, FireCommand, StartGameCommand]

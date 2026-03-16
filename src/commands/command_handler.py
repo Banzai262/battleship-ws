@@ -1,4 +1,4 @@
-from src.commands.commands import Command, PlaceShipCommand, FireCommand, StartGameCommand
+from src.commands.commands import Command, PlaceShipCommand, FireCommand, StartGameCommand, PlaceRandom
 from src.engine.errors import CommandNotFoundError, InvalidShipName
 from src.engine.game import PlayerId, Game
 
@@ -21,6 +21,10 @@ class CommandHandler:
                     raise InvalidShipName(f"Ship with name {ship_name} does not exist")
 
                 self.game.place_ship(player_id, ship, start, horizontal)
+                return {"status": "ok", "type": "ship_placed"}
+
+            case PlaceRandom(place_all):
+                await self.game.place_random(player_id, place_all)
                 return {"status": "ok", "type": "ship_placed"}
 
             case FireCommand(coord):
