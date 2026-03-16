@@ -1,4 +1,5 @@
 import asyncio
+import random
 from enum import Enum, auto
 
 from src.engine.board import Board
@@ -63,6 +64,55 @@ class Game:
             raise WrongPhase("Cannot place ships after game start")
 
         self.boards[player_id].place_ship(ship, start, horizontal)
+
+    async def place_random(self, player_id: str, place_all: bool = False):
+        board = self.boards[player_id]
+
+        print("Starting to place the ships randomly")
+
+        # If overriding, clear existing ships
+        # TODO place_all support
+        # if place_all:
+        #     board._clear_ships()
+
+        # ships_to_place = self.boards[player_id].ships if place_all else [ship for ship in self.boards[player_id].ships
+        #                                                                  if not ship.is_placed()]
+        ships_to_place = [ship for ship in self.boards[player_id].ships if not ship.is_placed()]
+
+        if not ships_to_place:
+            return {"status": "error", "message": "All ships already placed"}
+
+        for ship in ships_to_place:
+            board_size = self.boards[player_id].size
+
+            for _ in range(100):
+                orientation = random.choice([True, False])
+
+                if orientation:
+                    x = random.randint(0, board_size - ship.size)
+                    y = random.randint(0, board_size - 1)
+                else:
+                    x = random.randint(0, board_size - 1)
+                    y = random.randint(0, board_size - ship.size)
+
+                try:
+                    board.place_ship(ship, (x, y), orientation)
+                    if ship.is_placed():
+                        continue
+                except Exception as e:
+                    print(e)
+                finally:
+                    if ship.is_placed():
+                        break
+
+        if board.all_ships_placed():
+            await self.events.put({
+                "type": "ships_placed",
+                "player": player_id
+            })
+
+        print("All ships placed randomly")
+        return {"status": "ok"}
 
     async def start(self, first_player: PlayerId):
         if self.phase != GamePhase.SETUP:

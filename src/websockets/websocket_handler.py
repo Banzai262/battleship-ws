@@ -165,6 +165,7 @@ async def show_help(ws: WebSocket):
     await ws.send_text("""
         Commands:
           place <ship> <row> <col> <h|v>
+          place random (all)
           fire <row> <col>
           start
           view
