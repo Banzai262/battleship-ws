@@ -22,11 +22,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push image
+      - name: Build and push backend image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./backend
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/battleship-ws:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/battleship-ws:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/battleship-api:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/battleship-api:${{ github.sha }}
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/battleship-frontend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/battleship-frontend:${{ github.sha }}

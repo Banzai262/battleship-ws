@@ -37,6 +37,7 @@ The game can be played locally via a CLI (hotseat mode) or remotely by two playe
 - UI-agnostic game engine
 - CLI adapter for local play and testing
 - WebSocket adapter for remote multiplayer
+- Web-based interface for remote multiplayer (WIP)
 - Async, non-blocking server
 - Game registry supporting multiple concurrent games
 - Maximum number of concurrent games
@@ -111,12 +112,12 @@ Or you can use this `docker-compose.yml`:
 
 ```yaml
 services:
-  battleship:
-    image: banzai262/battleship-ws:latest
-    container_name: battleship-ws
+  battleship-api:
+    image: banzai262/battleship-api:latest
+    container_name: battleship-api
     restart: unless-stopped
-    ports:
-      - "12345:12345"
+    expose:
+      - "12345"
 ```
 
 ### Connecting to the server
@@ -134,6 +135,31 @@ There is also the endpoint `/status`, which returns `ok` and the number of activ
 ```bash
 curl http://<ip of the machine running the server>:12345/status
 ```
+
+## 3. Running with a webapp
+
+It is also possible to connect to the websocket server using a webapp to play the game.
+**The interface assumes the API runs on the same machine and in the same environment (both in local, both in Docker, etc).**
+
+To start the webapp locally, run this command from the `frontend` directory:
+
+```bash
+npm run dev
+```
+
+You can also run the web interface in Docker. Simply add this to your `docker-compose.yml`:
+
+```yaml
+services:
+  battleship-frontend:
+    image: banzai262/battleship-frontend:latest
+    container_name: battleship-frontend
+    restart: unless-stopped
+    expose:
+      - "80"
+```
+
+You can now go to `http://<ip of the machine hosting the api and interface>` to access the web interface.
 
 ---
 
@@ -190,7 +216,7 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 
 ## Next Steps / Possible Improvements
 - [ ] In-game chat
-- [ ] Random placing of ships
+- [X] Random placing of ships
 - [X] Automatic build pipeline
 - [ ] Persistent game storage (Redis or database)
 - [ ] Spectator mode
