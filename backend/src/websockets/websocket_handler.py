@@ -6,8 +6,9 @@ from backend.src.engine.errors import ERROR_CODES
 from backend.src.engine.game import GamePhase, PlayerId
 from backend.src.shared.render import render_grid, render_ship_status
 from backend.src.websockets.game_registry import GameRegistry
-from backend.src.websockets.requests.create_game import CreateGameRequest, CreateGameResponse
-from backend.src.websockets.requests.join_game import JoinGameRequest, JoinGameResponse
+from backend.src.websockets.protocol.message_types import RequestTypes, ResponseTypes
+from backend.src.websockets.protocol.requests import CreateGameRequest, JoinGameRequest
+from backend.src.websockets.protocol.responses import CreateGameResponse, JoinGameResponse
 
 app = FastAPI()
 registry = GameRegistry()
@@ -180,7 +181,7 @@ async def websocket_json(ws: WebSocket):
                 # Response
                 # "type": "game_created",
                 # "code": "ABC123"
-                case "create":
+                case RequestTypes.CREATE:
                     # TODO handle l'error TooManyGame, l'envoyer au frontend afin qu'il affiche un popup
                     request = CreateGameRequest(**data)
 
@@ -199,7 +200,7 @@ async def websocket_json(ws: WebSocket):
                 # Response
                 # "type": "joined",
                 # "code": "ABC123"
-                case "join":
+                case RequestTypes.JOIN:
                     request = JoinGameRequest(**data)
 
                     session = registry.join_game(request.code)
@@ -216,7 +217,7 @@ async def websocket_json(ws: WebSocket):
                     print(session.is_ready())
                     if session.is_ready():
                         await session.broadcast_json(
-                            {"type": "game_ready"}
+                            {"type": ResponseTypes.GAME_READY}
                         )
 
                 # Receives

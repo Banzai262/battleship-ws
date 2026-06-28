@@ -24,7 +24,7 @@ export default function CreateGamePage({onCreate, onJoin}: Props) {
 
                 <button
                     onClick={() => onCreate(playerName)}
-                    disabled={!playerName.trim()}
+                    disabled={!(!code.trim() && playerName.trim())}
                 >
                     Create Game
                 </button>
@@ -46,7 +46,7 @@ export default function CreateGamePage({onCreate, onJoin}: Props) {
 
                 <button
                     onClick={() => onJoin(playerName, code)}
-                    disabled={!code.trim() || !playerName.trim()}
+                    disabled={!(code.trim() && playerName.trim())}
                 >
                     Join Game
                 </button>

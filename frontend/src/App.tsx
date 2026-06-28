@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import CreateGamePage from "./pages/CreateGamePage.tsx";
 import {Screens} from "./types/Screens.ts";
 import WaitingPage from "./pages/WaitingPage.tsx";
+import {ResponseTypes} from "./protocol/MessageType.ts";
 
 const client = new BattleshipClient();
 
@@ -17,17 +18,17 @@ export default function App() {
             client.onMessage((message) => {
                 switch (message.type) {
                     // TODO surement retravailler la gestion des erreurs
-                    case "error":
+                    case ResponseTypes.Error:
                         alert(message.message);
                         break;
 
-                    case "game_created":
+                    case ResponseTypes.GameCreated:
                         setGameCode(message.code);
                         setScreen(Screens.Waiting);
                         break;
 
-                    case "game_ready":
-                    case "joined": // TODO va surement wait for ready at some point
+                    case ResponseTypes.GameReady:
+                    case ResponseTypes.Joined:
                         setScreen(Screens.Setup)
                         break;
 

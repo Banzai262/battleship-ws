@@ -1,4 +1,5 @@
-import type {CreateGameRequest, JoinGameRequest} from "../types/Requests.ts";
+import {type CreateGameRequest, type JoinGameRequest} from "../protocol/Requests.ts";
+import {RequestTypes} from "../protocol/MessageType.ts";
 
 export class BattleshipClient {
     private ws?: WebSocket;
@@ -36,7 +37,7 @@ export class BattleshipClient {
 
     public createGame(playerName: string): void {
         const request: CreateGameRequest = {
-            type: "create",// TODO type dans une enum j'imagine
+            type: RequestTypes.Create,
             player_name: playerName
         };
 
@@ -45,7 +46,7 @@ export class BattleshipClient {
 
     public joinGame(playerName: string, code: string): void {
         const request: JoinGameRequest = {
-            type: "join",// TODO type dans une enum j'imagine
+            type: RequestTypes.Join,
             player_name: playerName,
             code: code
         };
