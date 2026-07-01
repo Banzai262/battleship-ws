@@ -1,4 +1,9 @@
-import {type CreateGameRequest, type JoinGameRequest} from "../protocol/Requests.ts";
+import {
+    type CreateGameRequest,
+    type GetStateRequest,
+    type JoinGameRequest,
+    type PlaceRandomRequest
+} from "../protocol/Requests.ts";
 import {RequestTypes} from "../protocol/MessageType.ts";
 
 export class BattleshipClient {
@@ -38,7 +43,7 @@ export class BattleshipClient {
     public createGame(playerName: string): void {
         const request: CreateGameRequest = {
             type: RequestTypes.Create,
-            player_name: playerName
+            player_id: playerName
         };
 
         this.send(request);
@@ -47,8 +52,25 @@ export class BattleshipClient {
     public joinGame(playerName: string, code: string): void {
         const request: JoinGameRequest = {
             type: RequestTypes.Join,
-            player_name: playerName,
+            player_id: playerName,
             code: code
+        };
+
+        this.send(request);
+    }
+
+    public getState(): void {
+        const request: GetStateRequest = {
+            type: RequestTypes.GetState,
+        };
+
+        this.send(request);
+    }
+
+    public placeRandom(): void {
+        const request: PlaceRandomRequest = {
+            type: RequestTypes.PlaceRandom,
+            override: true,
         };
 
         this.send(request);

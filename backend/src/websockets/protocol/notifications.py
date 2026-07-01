@@ -1,5 +1,6 @@
-from backend.src.websockets.protocol.message_types import Response
+from backend.src.websockets.protocol.message_types import Response, ResponseTypes
 
 
-class Notification(Response):  # TODO pas certain mais je crois que oui
-    pass
+class Notification(Response):
+    type: ResponseTypes = ResponseTypes.NOTIFICATION
+    message: str

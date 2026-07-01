@@ -2,13 +2,17 @@ import asyncio
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from backend.src.commands.command_parser import parse_command
+from backend.src.commands.commands import PlaceRandom
 from backend.src.engine.errors import ERROR_CODES
 from backend.src.engine.game import GamePhase, PlayerId
+from backend.src.engine.game_session import GameSession
 from backend.src.shared.render import render_grid, render_ship_status
 from backend.src.websockets.game_registry import GameRegistry
 from backend.src.websockets.protocol.message_types import RequestTypes, ResponseTypes
-from backend.src.websockets.protocol.requests import CreateGameRequest, JoinGameRequest
-from backend.src.websockets.protocol.responses import CreateGameResponse, JoinGameResponse
+from backend.src.websockets.protocol.notifications import Notification
+from backend.src.websockets.protocol.requests import CreateGameRequest, JoinGameRequest, GetStateRequest, \
+    PlaceRandomRequest
+from backend.src.websockets.protocol.responses import CreateGameResponse, JoinGameResponse, ErrorResponse
 
 app = FastAPI()
 registry = GameRegistry()
@@ -151,70 +155,42 @@ async def websocket_endpoint(ws: WebSocket):
 async def websocket_json(ws: WebSocket):
     await ws.accept()
 
-    player_id: PlayerId
-
-    # TODO voir comment je vais handle toute l'histoire des turns et de la win condition
-    """
-    on va surement push un state après chaque action, du genre
-    
-    {
-      "type": "state",
-      "phase": "setup",
-      "current_player": "Guillaume",
-      "your_board": [...],
-      "enemy_board": [...],
-      "ships": [...]
-    }
-    
-    le frontend va render en fonction de ce qui se trouve dans le state
-    """
+    player_id: PlayerId | None = None
+    session: GameSession | None = None
+    code: str | None = None
 
     try:
         while True:
             data = await ws.receive_json()
 
             match data["type"]:
-                # Receives
-                # "type": "create",
-                # "player_name": "Guillaume"
-
-                # Response
-                # "type": "game_created",
-                # "code": "ABC123"
                 case RequestTypes.CREATE:
-                    # TODO handle l'error TooManyGame, l'envoyer au frontend afin qu'il affiche un popup
                     request = CreateGameRequest(**data)
+                    player_id = request.player_id
 
                     code, session = registry.create_game(dev_mode=False)
-                    await session.join(request.player_name)
-                    session.connections[request.player_name] = ws
+                    await session.join(request.player_id)
+                    session.connections[request.player_id] = ws
 
                     response = CreateGameResponse(code=code)
-                    await ws.send_json(response.model_dump())
+                    await ws.send_json(response.model_dump(mode="json"))
 
-                # Receives
-                # "type": "join",
-                # "player_name": "Guillaume"
-                # "code": "ABC123"
-
-                # Response
-                # "type": "joined",
-                # "code": "ABC123"
                 case RequestTypes.JOIN:
                     request = JoinGameRequest(**data)
+                    player_id = request.player_id
+                    code = request.code
 
-                    session = registry.join_game(request.code)
+                    session = registry.join_game(code)
 
-                    await session.join(request.player_name)
-                    session.connections[request.player_name] = ws
+                    await session.join(request.player_id)
+                    session.connections[request.player_id] = ws
 
                     # TODO gérer statuts reconnected et ok
 
-                    response = JoinGameResponse(code=request.code)
-                    await ws.send_json(response.model_dump())
+                    response = JoinGameResponse(code=code)
+                    await ws.send_json(response.model_dump(mode="json"))
 
                     # TODO surement revoir le format de ça, pour envoyer un state plus complet
-                    print(session.is_ready())
                     if session.is_ready():
                         await session.broadcast_json(
                             {"type": ResponseTypes.GAME_READY}
@@ -233,14 +209,19 @@ async def websocket_json(ws: WebSocket):
                 case "place":
                     pass
 
-                # Receives
-                # "type": "place_random",
-                # "override": true
+                case RequestTypes.PLACE_RANDOM:
+                    request = PlaceRandomRequest(**data)
 
-                # Response
-                # "type": "all_ships_placed",
-                case "place_random":
-                    pass
+                    result = await session.handle_command(player_id, PlaceRandom(place_all=request.override))
+
+                    if result["status"] == "error":
+                        await ws.send_json(ErrorResponse(message=result["message"]).model_dump(mode="json"))
+                        continue
+
+                    notif = Notification(message="Your fleet has been deployed, waiting for other player")
+                    await ws.send_json(notif.model_dump(mode="json"))
+
+                    await session.broadcast_state()
 
                 # Receives
                 # "type": "fire",
@@ -252,24 +233,12 @@ async def websocket_json(ws: WebSocket):
                 case "fire":
                     pass
 
-                # Receives
-                # "type": "get_state",
-                # "player_id": "Guillaume"  pas sûr
+                case RequestTypes.GET_STATE:
+                    request = GetStateRequest(**data)
+                    response = session.build_state(player_id)
 
-                # Response
-                # "type": "state",
-                # "phase": "setup",
-                # "current_player": "Guillaume",
-                # "your_board": [...],
-                # "enemy_board": [...],
-                # "ships": [...],
-                # "winner": null
+                    await ws.send_json(response.model_dump(mode="json"))
 
-                # TODO le state sera envoyé très souvent
-                case "get_state":
-                    pass
-
-                # TODO va aussi avoir des messages d'erreur et des notifications
     except Exception as e:
         await ws.send_json({
             "type": "error",

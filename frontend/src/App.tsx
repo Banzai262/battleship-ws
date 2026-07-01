@@ -4,22 +4,40 @@ import CreateGamePage from "./pages/CreateGamePage.tsx";
 import {Screens} from "./types/Screens.ts";
 import WaitingPage from "./pages/WaitingPage.tsx";
 import {ResponseTypes} from "./protocol/MessageType.ts";
+import SetupPage from "./pages/SetupPage.tsx";
+import type {GameState} from "./types/GameState.ts";
+import {GamePhases} from "./types/GamePhase.ts";
+import "./App.css";
 
 const client = new BattleshipClient();
 
 export default function App() {
     const [gameCode, setGameCode] = useState<string | null>(null);
     const [screen, setScreen] = useState(Screens.Create);
+    const [gameState, setGameState] = useState<GameState | null>(null);
+    const [notification, setNotification] = useState<string | null>(null);
+
+    let page;
 
     useEffect(() => {
         async function init() {
             await client.connect();
 
+
             client.onMessage((message) => {
                 switch (message.type) {
-                    // TODO surement retravailler la gestion des erreurs
+                    // TODO surement some kind of toast rouge
                     case ResponseTypes.Error:
                         alert(message.message);
+                        break;
+
+                    case ResponseTypes.Notification:
+                        // TODO toast bleu ou vert
+                        setNotification(message.message);
+
+                        setTimeout(() => {
+                            setNotification(null);
+                        }, 3000);
                         break;
 
                     case ResponseTypes.GameCreated:
@@ -28,8 +46,11 @@ export default function App() {
                         break;
 
                     case ResponseTypes.GameReady:
-                    case ResponseTypes.Joined:
-                        setScreen(Screens.Setup)
+                        client.getState();
+                        break
+
+                    case ResponseTypes.State:
+                        setGameState(message);
                         break;
 
                     default:
@@ -45,94 +66,84 @@ export default function App() {
         }
     }, []);
 
-    switch (screen) {
-        case Screens.Create:
-            return (
-                <CreateGamePage
-                    onCreate={(name) => client.createGame(name)}
-                    onJoin={(name, code) => client.joinGame(name, code)}
-                />
-            );
+    if (!gameState) {
+        switch (screen) {
+            case Screens.Create:
+                page = (
+                    <CreateGamePage
+                        onCreate={(name) => client.createGame(name)}
+                        onJoin={(name, code) => client.joinGame(name, code)}
+                    />
+                );
+                break;
 
-        case Screens.Waiting:
-            return (
-                <WaitingPage gameCode={gameCode!} />
-            );
-
-        case Screens.Setup:
-            return (
-                <div>
-                    Setup screen. Va s'occuper du placement, drag and drop, random, rotation
-                </div>
-            );
-
-        case Screens.Playing:
-            return (
-                <div>
-                    Playing... S'occuper des tours et du click to fire
-                </div>
-            );
-
-        case Screens.Finished:
-            return (
-                <div>
-                    Game finished. Play again et return to lobby
-                </div>
-            );
+            case Screens.Waiting:
+                page = (
+                    <WaitingPage gameCode={gameCode!}/>
+                );
+                break
+        }
     }
+
+    switch (gameState?.phase) {
+        case GamePhases.SETUP:
+            page = (
+                <SetupPage state={gameState!} onRandomPlacement={() => client.placeRandom()}/>
+            );
+            break;
+
+        case GamePhases.IN_PROGRESS:
+            // return <BattlePage state={gameState} />;
+            return "TODO page de jeu"
+
+        case GamePhases.FINISHED:
+            // return <VictoryPage state={gameState} />;
+            return "TODO page de fin de partie";
+    }
+
+    /**
+     * TODO éventuellement dans un toast component (va falloir un toast service anyway pour faire pop des notifications partout
+     *
+     * <NotificationToast
+     *     message={notification}
+     * />
+     *
+     * {page}
+     */
+    return (
+        <>
+            {notification && (
+                <div className="notification">
+                    {notification}
+                </div>
+            )}
+
+            {page}
+        </>
+    );
 }
 
-/*
-TODO this is the plan
-
-4. get state + setup ICI
-5. faire les trucs qui manquent à partir de là
- */
-
-
 /**
- * TODO éventuellement
- * type Screens =
- *     | "lobby"
- *     | "waiting"
- *     | "setup"
- *     | "playing"
- *     | "finished";
- *
- *     pour pouvoir faire const [screen, setScreen] = useState<Screens>("lobby");
- *
- *     et un truc du genre
- *
- *     switch (screen) {
- *     case Screens.Create:
- *         return <CreateGamePage />;
- *
- *     case Screens.Waiting:
- *         return <WaitingPage />;
- *
- *     case Screens.Setup:
- *         return <SetupPage />;
- *
- *     case Screens.Playing:
- *         return <GamePage />;
- *
- *     case Screens.Finished:
- *         return <GameOverPage />;
- * }
- *
- * on peut déduire le screen selon le state
- *
- * interface GameState {
- *     phase: "setup" | "in_progress" | "finished";
- *
- *     currentPlayer: string;
- *
- *     yourBoard: Cell[][];
- *
- *     enemyBoard: Cell[][];
- *
- *     ships: ShipStatus[];
- *
- *     winner?: string;
- * }
+ * TODO plan
+ * Setup page
+ * Two boards
+ * Random placement DONE
+ * Ship health panel
+ * Manual placement
+ * Click to place
+ * Rotate button
+ * Drag & drop
+ * Ship dragging
+ * Ship rotation
+ * Collision preview
+ * Battle page
+ * Click enemy board to fire
+ * Turn indicator
+ * Animations
+ * Hit
+ * Miss
+ * Ship sunk
+ * Current player glow
+ * Reconnect support
+ * Restore state after refresh
  */

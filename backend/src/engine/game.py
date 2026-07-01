@@ -8,7 +8,7 @@ from backend.src.engine.ships import Coordinate, Ship, test_ships
 from backend.src.engine.shot import ShotResult, ShotOutcome
 
 
-class GamePhase(Enum):
+class GamePhase(str, Enum):
     WAITING_PLAYERS = "waiting_players"
     SETUP = "setup"
     IN_PROGRESS = "in_progress"
@@ -138,7 +138,7 @@ class Game:
         if player_id != self.current_turn:
             raise TurnError("Not your turn")
 
-        opponent = self._get_opponent(player_id)
+        opponent = self.get_opponent(player_id)
         board = self.boards[opponent]
 
         result = board.receive_fire(coord)
@@ -152,7 +152,7 @@ class Game:
         return result
 
     def get_view(self, player_id: PlayerId) -> dict:
-        opponent = self._get_opponent(player_id)
+        opponent = self.get_opponent(player_id)
 
         return {
             "phase": self.phase.value,
@@ -165,15 +165,15 @@ class Game:
     def get_ship_status(self, player_id: PlayerId) -> list:
         return self.boards[player_id].render_ships()
 
+    def get_opponent(self, player_id: PlayerId) -> PlayerId | None:
+        for pid in self.boards.keys():
+            if pid != player_id:
+                return pid
+        return None
+
     async def _check_win(self, defending_player: PlayerId):
         board = self.boards[defending_player]
 
         if board.all_ships_sunk():
             self.phase = GamePhase.FINISHED
-            self.winner = self._get_opponent(defending_player)
-
-    def _get_opponent(self, player_id: PlayerId) -> PlayerId | None:
-        for pid in self.boards.keys():
-            if pid != player_id:
-                return pid
-        return None
+            self.winner = self.get_opponent(defending_player)
