@@ -1,4 +1,10 @@
-import type {CreateGameRequest, JoinGameRequest} from "../types/Requests.ts";
+import {
+    type CreateGameRequest,
+    type GetStateRequest,
+    type JoinGameRequest,
+    type PlaceRandomRequest
+} from "../protocol/Requests.ts";
+import {RequestTypes} from "../protocol/MessageType.ts";
 
 export class BattleshipClient {
     private ws?: WebSocket;
@@ -36,8 +42,8 @@ export class BattleshipClient {
 
     public createGame(playerName: string): void {
         const request: CreateGameRequest = {
-            type: "create",// TODO type dans une enum j'imagine
-            player_name: playerName
+            type: RequestTypes.Create,
+            player_id: playerName
         };
 
         this.send(request);
@@ -45,9 +51,26 @@ export class BattleshipClient {
 
     public joinGame(playerName: string, code: string): void {
         const request: JoinGameRequest = {
-            type: "join",// TODO type dans une enum j'imagine
-            player_name: playerName,
+            type: RequestTypes.Join,
+            player_id: playerName,
             code: code
+        };
+
+        this.send(request);
+    }
+
+    public getState(): void {
+        const request: GetStateRequest = {
+            type: RequestTypes.GetState,
+        };
+
+        this.send(request);
+    }
+
+    public placeRandom(): void {
+        const request: PlaceRandomRequest = {
+            type: RequestTypes.PlaceRandom,
+            override: true,
         };
 
         this.send(request);

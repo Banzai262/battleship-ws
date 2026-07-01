@@ -5,7 +5,7 @@ from backend.src.engine.ships import Ship, Coordinate, standard_ships
 from backend.src.engine.shot import ShotResult, ShotOutcome
 
 
-class CellState(Enum):
+class CellState(str, Enum):
     EMPTY = 0
     SHIP = 1
     HIT = 2
@@ -100,6 +100,7 @@ class Board:
     def render_ships(self) -> list:
         ships_status = []
 
+# TODO on pourra utiliser ShipStatus
         for ship in self.ships:
             ships_status.append(
                 {

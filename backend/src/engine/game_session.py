@@ -8,6 +8,7 @@ from backend.src.commands.command_handler import CommandHandler
 from backend.src.commands.commands import Command, PlaceShipCommand, StartGameCommand, FireCommand, PlaceRandom
 from backend.src.engine.errors import PlayerCountError, TurnError
 from backend.src.engine.game import PlayerId, Game, GamePhase, GameEvent
+from backend.src.websockets.protocol.responses import GetStateResponse
 
 """
 This class orchestrates player state and game flow.
@@ -37,6 +38,29 @@ class GameSession:
         self.ready_event = asyncio.Event()
         self.game_phase_at_disconnect = GamePhase.WAITING_PLAYERS
 
+    def build_state(self, player_id: PlayerId) -> GetStateResponse:
+        opponent = self.game.get_opponent(player_id)
+        view = self.get_view(player_id)
+        statuses = self.game.get_ship_status(player_id)
+
+        for status in statuses:
+            status["positions"] = list(status["positions"])
+            status["hits"] = list(status["hits"])
+
+        return GetStateResponse(
+            phase=view["phase"],
+            currentPlayer=player_id if view["your_turn"] else opponent,
+            winner=view["winner"],
+            yourBoard=view["your_board"],
+            enemyBoard=view["enemy_board"],
+            ships=statuses
+        )
+
+    async def broadcast_state(self):
+        for player_id, ws in self.connections.items():
+            state = self.build_state(player_id)
+            await ws.send_json(state.model_dump(mode="json"))
+
     async def join(self, player_id: PlayerId) -> dict:
         if player_id in self.players:
             if player_id not in self.connected:
@@ -52,6 +76,7 @@ class GameSession:
 
         self.stamp()
         self.players.append(player_id)
+        self.connected.add(player_id)
         self.game.add_player(player_id)
 
         if self.is_ready():

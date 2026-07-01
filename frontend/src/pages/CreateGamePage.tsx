@@ -13,6 +13,9 @@ export default function CreateGamePage({onCreate, onJoin}: Props) {
     return (
         <div>
             <h1>Battleship</h1>
+            <p>
+                TODO J'aimerais un genre de logo pour le nom Battleship, ou en tout cas un truc mieux
+            </p>
 
             <p>
                 <input
@@ -24,7 +27,7 @@ export default function CreateGamePage({onCreate, onJoin}: Props) {
 
                 <button
                     onClick={() => onCreate(playerName)}
-                    disabled={!playerName.trim()}
+                    disabled={!(!code.trim() && playerName.trim())}
                 >
                     Create Game
                 </button>
@@ -46,7 +49,7 @@ export default function CreateGamePage({onCreate, onJoin}: Props) {
 
                 <button
                     onClick={() => onJoin(playerName, code)}
-                    disabled={!code.trim() || !playerName.trim()}
+                    disabled={!(code.trim() && playerName.trim())}
                 >
                     Join Game
                 </button>
