@@ -5,7 +5,7 @@ from typing import Optional
 from backend.src.engine.ships import Ship
 
 
-class ShotOutcome(Enum):
+class ShotOutcome(str, Enum):
     HIT = "hit"
     MISS = "miss"
     SUNK = "sunk"

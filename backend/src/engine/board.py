@@ -109,7 +109,8 @@ class Board:
                     "placed": ship.is_placed(),
                     "sunk": ship.is_sunk(),
                     "positions": ship.positions,
-                    "hits": ship.hits
+                    "hits": ship.hits,
+                    "health": ship.size - len(ship.hits)
                 }
             )
 

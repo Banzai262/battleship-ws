@@ -1,6 +1,7 @@
 import type {GamePhases} from "./GamePhase.ts";
 import type {ShipStatus} from "../models/ShipStatus.ts";
-import type {Cell} from "../models/Cell.ts";
+import type {CellState} from "./CellState.ts";
+import type {ShotOutcome} from "./ShotOutcome.ts";
 
 export interface GameState {
     phase: GamePhases;
@@ -9,11 +10,15 @@ export interface GameState {
     // you: PlayerState;
     // opponent: PlayerState;
 
-    yourBoard: Cell[][];
-    enemyBoard: Cell[][];
+    // TODO pourrait être Cell, qui contiendrait cellstate et autres metadata
+    yourBoard: CellState[][];
+    enemyBoard: CellState[][];
 
     ships: ShipStatus[];
 
     currentPlayer: string;
+    opponentName?: string;
     winner?: string;
+
+    lastShotResult?: ShotOutcome;
 }

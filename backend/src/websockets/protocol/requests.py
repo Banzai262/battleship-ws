@@ -20,3 +20,9 @@ class GetStateRequest(Request):
 class PlaceRandomRequest(Request):
     type: RequestTypes = RequestTypes.PLACE_RANDOM
     override: bool
+
+
+class FireRequest(Request):
+    type: RequestTypes = RequestTypes.FIRE
+    row: int
+    col: int

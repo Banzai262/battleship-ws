@@ -1,5 +1,6 @@
 from backend.src.engine.board import CellState
 from backend.src.engine.game import GamePhase, PlayerId
+from backend.src.engine.shot import ShotOutcome
 from backend.src.models.ship_status import ShipStatus
 from backend.src.websockets.protocol.message_types import Response, ResponseTypes
 
@@ -20,6 +21,7 @@ class GetStateResponse(Response):
     phase: GamePhase
 
     currentPlayer: PlayerId | None
+    opponentName: PlayerId | None
     winner: str | None
 
     # TODO vraiment utile ?
@@ -31,6 +33,8 @@ class GetStateResponse(Response):
     enemyBoard: list[list[CellState]]
 
     ships: list[ShipStatus]
+
+    lastShotResult: ShotOutcome | None
 
 
 class ErrorResponse(Response):

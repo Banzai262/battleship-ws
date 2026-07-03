@@ -1,0 +1,23 @@
+.cell {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #888;
+    background: white;
+    cursor: pointer;
+    padding: 0;
+    font-size: 20px;
+}
+
+.cell.clickable {
+    cursor: crosshair;
+}
+
+.cell.clickable:hover {
+    outline: 2px solid #d32f2f;
+    outline-offset: -2px;
+    background: #fff5f5;
+}
+
+.cell.disabled {
+    cursor: default;
+}

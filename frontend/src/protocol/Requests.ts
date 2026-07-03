@@ -14,3 +14,8 @@ export interface GetStateRequest extends Request {}
 export interface PlaceRandomRequest extends Request {
     override: boolean; // TODO toujours true pour le moment, anyway le backend le supporte pas
 }
+
+export interface FireRequest extends Request {
+    row: number;
+    col: number;
+}

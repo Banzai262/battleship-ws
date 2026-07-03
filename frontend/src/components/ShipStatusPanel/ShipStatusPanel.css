@@ -1,0 +1,31 @@
+.ship-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.ship-panel h2 {
+    margin: 0 0 12px 0;
+    color: #222;
+}
+
+.ship-row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+
+    align-items: center;
+    gap: 10px;
+}
+
+.ship-name {
+    font-weight: 600;
+    color: #222;
+}
+
+.ship-health {
+    font-family: monospace;
+    letter-spacing: 2px;
+}

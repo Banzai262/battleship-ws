@@ -10,3 +10,4 @@ class ShipStatus(BaseModel):
     sunk: bool
     positions: list[Coordinate]
     hits: list[Coordinate]
+    health: int
