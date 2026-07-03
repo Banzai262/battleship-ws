@@ -1,0 +1,49 @@
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 2px;
+}
+
+.board-with-coordinates {
+    display: grid;
+
+    grid-template-columns: 30px auto 30px;
+    grid-template-rows: 30px auto 30px;
+
+    gap: 6px;
+}
+
+.column-labels {
+    display: grid;
+
+    grid-template-columns: repeat(10, 40px);
+    gap: 2px;
+}
+
+.row-labels {
+    display: grid;
+
+    grid-template-rows: repeat(10, 40px);
+    gap: 2px;
+}
+
+.label {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+    color: #333;
+    user-select: none;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.corner {
+    width: 30px;
+    height: 30px;
+}

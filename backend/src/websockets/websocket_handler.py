@@ -2,7 +2,7 @@ import asyncio
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from backend.src.commands.command_parser import parse_command
-from backend.src.commands.commands import PlaceRandom
+from backend.src.commands.commands import PlaceRandom, FireCommand
 from backend.src.engine.errors import ERROR_CODES
 from backend.src.engine.game import GamePhase, PlayerId
 from backend.src.engine.game_session import GameSession
@@ -11,7 +11,7 @@ from backend.src.websockets.game_registry import GameRegistry
 from backend.src.websockets.protocol.message_types import RequestTypes, ResponseTypes
 from backend.src.websockets.protocol.notifications import Notification
 from backend.src.websockets.protocol.requests import CreateGameRequest, JoinGameRequest, GetStateRequest, \
-    PlaceRandomRequest
+    PlaceRandomRequest, FireRequest
 from backend.src.websockets.protocol.responses import CreateGameResponse, JoinGameResponse, ErrorResponse
 
 app = FastAPI()
@@ -230,8 +230,16 @@ async def websocket_json(ws: WebSocket):
 
                 # Response
                 # "type": "hit" | "missed" | "sunk",
-                case "fire":
-                    pass
+                case RequestTypes.FIRE:
+                    request = FireRequest(**data)
+
+                    result = await session.handle_command(player_id, FireCommand((request.row, request.col)))
+
+                    if result["status"] == "error":
+                        await ws.send_json(ErrorResponse(message=result["message"]).model_dump(mode="json"))
+                        continue
+
+                    await session.broadcast_state(result["result"])
 
                 case RequestTypes.GET_STATE:
                     request = GetStateRequest(**data)

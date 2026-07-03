@@ -1,0 +1,71 @@
+.battle-page {
+    padding: 30px;
+}
+
+.battle-page h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.panel:first-child,
+.panel:nth-child(3) {
+    width: 300px;
+}
+
+.battle-grid {
+    display: grid;
+
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+
+    gap: 32px;
+
+    justify-content: center;
+    align-items: start;
+}
+
+.panel {
+    padding: 20px;
+
+    background: #fafafa;
+
+    border: 1px solid #ddd;
+    border-radius: 10px;
+
+    width: fit-content;
+    min-height: 180px;
+}
+
+.panel h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+
+    color: #111;
+    font-weight: 700;
+    font-size: 1.4rem;
+
+    text-align: center;
+}
+
+.turn-banner {
+    margin: 20px auto 30px;
+    max-width: 700px;
+
+    padding: 14px;
+
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+
+    border-radius: 8px;
+}
+
+.my-turn {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.opponent-turn {
+    background: #fef3c7;
+    color: #92400e;
+}

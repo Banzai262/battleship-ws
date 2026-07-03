@@ -92,7 +92,13 @@ It can be run locally or in Docker.
 
 ### Run Locally (Without Docker)
 
-Start the WebSocket server:
+Navigate to the `backend` folder and install the requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
+Start the WebSocket server from the same directory:
 
 ```bash
 fastapi run .\src\websockets\websocket_handler.py --host 0.0.0.0 --port 12345
@@ -141,7 +147,13 @@ curl http://<ip of the machine running the server>:12345/status
 It is also possible to connect to the websocket server using a webapp to play the game.
 **The interface assumes the API runs on the same machine and in the same environment (both in local, both in Docker, etc).**
 
-To start the webapp locally, run this command from the `frontend` directory:
+To start the webapp locally, install the dependencies and run the project from the `frontend` directory:
+
+```bash
+npm install
+```
+
+Then
 
 ```bash
 npm run dev
@@ -178,6 +190,8 @@ This layer is responsible for:
 - broadcasting game events to connected players
 
 All communication between clients and the server happens through structured websocket messages.
+
+There are 2 websockets endpoints (`/ws` and `/ws/json`), but they do basically the same thing. One takes care of the command line clients such as `wscat`, which uses a text-based protocol, while the other takes care of the web client, which uses a JSON protocol.
 
 ---
 
@@ -222,9 +236,13 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 - [ ] Spectator mode
 - [ ] Multiple simultaneous games per user
 - [ ] Authentication (JWT or sessions)
-- [ ] Simple web frontend (keeping the engine UI-agnostic)
+- [X] Simple web frontend (keeping the engine UI-agnostic)
+- [ ] Ships visuals and manual placement from the web interface
+- [ ] Matching web API to the command line API functionality wise
+- [ ] Other nice to have features for the web interface (QR code, mobile support, etc.)
 - [ ] AI opponent
-- [ ] Match history and statistics
+- [ ] Match history (should be next)
+- [ ] Statistics
 - [ ] Rate limiting and abuse protection
 - [ ] There are still a few bugs to iron out
 

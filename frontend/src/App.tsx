@@ -1,17 +1,20 @@
 import {BattleshipClient} from "./services/Websocket.ts";
 import {useEffect, useState} from "react";
-import CreateGamePage from "./pages/CreateGamePage.tsx";
+import CreateGamePage from "./pages/CreateGame/CreateGamePage.tsx";
 import {Screens} from "./types/Screens.ts";
-import WaitingPage from "./pages/WaitingPage.tsx";
+import WaitingPage from "./pages/Waiting/WaitingPage.tsx";
 import {ResponseTypes} from "./protocol/MessageType.ts";
-import SetupPage from "./pages/SetupPage.tsx";
+import SetupPage from "./pages/Setup/SetupPage.tsx";
 import type {GameState} from "./types/GameState.ts";
 import {GamePhases} from "./types/GamePhase.ts";
 import "./App.css";
+import BattlePage from "./pages/Battle/BattlePage.tsx";
+import GameOverPage from "./pages/GameOver/GameOverPage.tsx";
 
 const client = new BattleshipClient();
 
 export default function App() {
+    const [playerName, setPlayerName] = useState("");
     const [gameCode, setGameCode] = useState<string | null>(null);
     const [screen, setScreen] = useState(Screens.Create);
     const [gameState, setGameState] = useState<GameState | null>(null);
@@ -71,8 +74,14 @@ export default function App() {
             case Screens.Create:
                 page = (
                     <CreateGamePage
-                        onCreate={(name) => client.createGame(name)}
-                        onJoin={(name, code) => client.joinGame(name, code)}
+                        onCreate={(name) => {
+                            setPlayerName(name);
+                            client.createGame(name)
+                        }}
+                        onJoin={(name, code) => {
+                            setPlayerName(name);
+                            client.joinGame(name, code)
+                        }}
                     />
                 );
                 break;
@@ -93,12 +102,22 @@ export default function App() {
             break;
 
         case GamePhases.IN_PROGRESS:
-            // return <BattlePage state={gameState} />;
-            return "TODO page de jeu"
+            return <BattlePage state={gameState} playerName={playerName} onFire={(row, col) => {
+                // TODO peut-être un log à la Baldur's gate, commun au 2 joueurs, qui explique ce qui s'est passé
+                client.fire(row, col)
+            }}/>;
 
         case GamePhases.FINISHED:
-            // return <VictoryPage state={gameState} />;
-            return "TODO page de fin de partie";
+            return (
+                <GameOverPage
+                    won={gameState.winner === playerName}
+                    ships={gameState.ships}
+                    onReplay={() => {
+                    }} onBackHome={() => {
+                    client.disconnect();
+                    window.location.reload();
+                }}/>
+            );
     }
 
     /**

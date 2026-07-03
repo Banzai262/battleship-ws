@@ -1,16 +1,19 @@
-import type {Cell} from "../models/Cell.ts";
-import {CellState} from "../types/CellState.ts";
+import {CellMap, CellState} from "../../types/CellState.ts";
 import "./Cell.css";
 
 interface Props {
-    cell: Cell;
+    cell: CellState;
+    disabled: boolean
     onClick?: () => void;
+    onMouseEnter?: () => void;
 }
 
-export default function CellComponent({ cell, onClick }: Props) {
+export default function CellComponent({cell, disabled, onClick, onMouseEnter}: Props) {
     return (
-        <button className="cell" onClick={onClick}>
-            {cell.state === CellState.Ship ? "🚢" : "~"}
+        <button className={`cell ${disabled ? "disabled" : "clickable"}`}
+                onClick={onClick}
+                onMouseEnter={onMouseEnter}>
+            {CellMap(cell)}
         </button>
     );
 }

@@ -1,5 +1,6 @@
 import {
     type CreateGameRequest,
+    type FireRequest,
     type GetStateRequest,
     type JoinGameRequest,
     type PlaceRandomRequest
@@ -71,6 +72,16 @@ export class BattleshipClient {
         const request: PlaceRandomRequest = {
             type: RequestTypes.PlaceRandom,
             override: true,
+        };
+
+        this.send(request);
+    }
+
+    public fire(row: number, col: number): void {
+        const request: FireRequest = {
+            type: RequestTypes.Fire,
+            row: row,
+            col: col
         };
 
         this.send(request);
