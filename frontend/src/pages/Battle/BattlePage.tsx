@@ -5,6 +5,7 @@ import ShipStatusPanel from "../../components/ShipStatusPanel/ShipStatusPanel.ts
 import {useState} from "react";
 import type {Coordinate} from "../../types/Coordinate.ts";
 import TargetPanel from "../../components/TargetPanel/TargetPanel.tsx";
+import EnemyFleetPanel from "../../components/EnemyFleetPanel/EnemyFleetPanel.tsx";
 
 interface Props {
     state: GameState;
@@ -45,6 +46,8 @@ export default function BattlePage(props: Props) {
                         lastShotResult={props.state.lastShotResult}
                         lastPlayer={props.playerName === props.state.currentPlayer ? props.state.opponentName : props.playerName}
                     />
+
+                    <EnemyFleetPanel shipsSunk={props.state.enemyShipsSunk} />
                 </div>
 
                 <div className="panel">

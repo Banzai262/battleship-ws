@@ -35,6 +35,7 @@ class GetStateResponse(Response):
     ships: list[ShipStatus]
 
     lastShotResult: ShotOutcome | None
+    enemyShipsSunk: int
 
 
 class ErrorResponse(Response):

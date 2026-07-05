@@ -1,0 +1,22 @@
+.enemy-fleet-panel {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    background: white;
+}
+
+.enemy-icons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+
+    font-size: 1.8rem;
+
+    margin: 20px 0;
+}
+
+.enemy-counter {
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+}

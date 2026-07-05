@@ -21,4 +21,5 @@ export interface GameState {
     winner?: string;
 
     lastShotResult?: ShotOutcome;
+    enemyShipsSunk: number;
 }
