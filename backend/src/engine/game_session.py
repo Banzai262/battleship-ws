@@ -48,6 +48,12 @@ class GameSession:
             status["positions"] = list(status["positions"])
             status["hits"] = list(status["hits"])
 
+        enemy_statuses = self.game.get_ship_status(opponent)
+        ships_sunk = 0
+        for status in enemy_statuses:
+            if status["sunk"]:
+                ships_sunk += 1
+
         return GetStateResponse(
             phase=view["phase"],
             currentPlayer=player_id if view["your_turn"] else opponent,
@@ -56,7 +62,8 @@ class GameSession:
             yourBoard=view["your_board"],
             enemyBoard=view["enemy_board"],
             ships=statuses,
-            lastShotResult=shot_outcome
+            lastShotResult=shot_outcome,
+            enemyShipsSunk=ships_sunk
         )
 
     async def broadcast_state(self, shot_outcome: ShotOutcome = None):
