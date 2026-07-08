@@ -19,10 +19,6 @@ export default function BattlePage(props: Props) {
 
     return (
         <div className="battle-page">
-
-            {/*// TODO custom header (utilisé dans chaque page)*/}
-            <h1>Battleship</h1>
-
             <div className={`turn-banner ${isMyTurn ? "my-turn" : "opponent-turn"}`}>
                 {isMyTurn
                     ? "🟢 Your turn! Fire at the enemy board."
@@ -47,7 +43,7 @@ export default function BattlePage(props: Props) {
                         lastPlayer={props.playerName === props.state.currentPlayer ? props.state.opponentName : props.playerName}
                     />
 
-                    <EnemyFleetPanel shipsSunk={props.state.enemyShipsSunk} />
+                    <EnemyFleetPanel shipsSunk={props.state.enemyShipsSunk}/>
                 </div>
 
                 <div className="panel">

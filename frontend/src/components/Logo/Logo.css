@@ -1,0 +1,7 @@
+.logo {
+    width: min(500px, 90vw);
+    height: auto;
+
+    display: block;
+    margin: 0 auto 32px auto;
+}
