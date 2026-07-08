@@ -10,6 +10,7 @@ import {GamePhases} from "./types/GamePhase.ts";
 import "./App.css";
 import BattlePage from "./pages/Battle/BattlePage.tsx";
 import GameOverPage from "./pages/GameOver/GameOverPage.tsx";
+import AppLayout from "./components/AppLayout/AppLayout.tsx";
 
 const client = new BattleshipClient();
 
@@ -73,22 +74,26 @@ export default function App() {
         switch (screen) {
             case Screens.Create:
                 page = (
-                    <CreateGamePage
-                        onCreate={(name) => {
-                            setPlayerName(name);
-                            client.createGame(name)
-                        }}
-                        onJoin={(name, code) => {
-                            setPlayerName(name);
-                            client.joinGame(name, code)
-                        }}
-                    />
+                    <AppLayout>
+                        <CreateGamePage
+                            onCreate={(name) => {
+                                setPlayerName(name);
+                                client.createGame(name)
+                            }}
+                            onJoin={(name, code) => {
+                                setPlayerName(name);
+                                client.joinGame(name, code)
+                            }}
+                        />
+                    </AppLayout>
                 );
                 break;
 
             case Screens.Waiting:
                 page = (
-                    <WaitingPage gameCode={gameCode!}/>
+                    <AppLayout>
+                        <WaitingPage gameCode={gameCode!}/>
+                    </AppLayout>
                 );
                 break
         }
@@ -97,26 +102,34 @@ export default function App() {
     switch (gameState?.phase) {
         case GamePhases.SETUP:
             page = (
-                <SetupPage state={gameState!} onRandomPlacement={() => client.placeRandom()}/>
+                <AppLayout>
+                    <SetupPage state={gameState!} onRandomPlacement={() => client.placeRandom()}/>
+                </AppLayout>
             );
             break;
 
         case GamePhases.IN_PROGRESS:
-            return <BattlePage state={gameState} playerName={playerName} onFire={(row, col) => {
-                // TODO peut-être un log à la Baldur's gate, commun au 2 joueurs, qui explique ce qui s'est passé
-                client.fire(row, col)
-            }}/>;
+            return (
+                <AppLayout>
+                    <BattlePage state={gameState} playerName={playerName} onFire={(row, col) => {
+                        // TODO peut-être un log à la Baldur's gate, commun au 2 joueurs, qui explique ce qui s'est passé
+                        client.fire(row, col)
+                    }}/>
+                </AppLayout>
+            );
 
         case GamePhases.FINISHED:
             return (
-                <GameOverPage
-                    won={gameState.winner === playerName}
-                    ships={gameState.ships}
-                    onReplay={() => {
-                    }} onBackHome={() => {
-                    client.disconnect();
-                    window.location.reload();
-                }}/>
+                <AppLayout>
+                    <GameOverPage
+                        won={gameState.winner === playerName}
+                        ships={gameState.ships}
+                        onReplay={() => {
+                        }} onBackHome={() => {
+                        client.disconnect();
+                        window.location.reload();
+                    }}/>
+                </AppLayout>
             );
     }
 

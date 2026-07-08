@@ -12,10 +12,7 @@ export default function CreateGamePage({onCreate, onJoin}: Props) {
 
     return (
         <div>
-            <h1>Battleship</h1>
-            <p>
-                TODO J'aimerais un genre de logo pour le nom Battleship, ou en tout cas un truc mieux
-            </p>
+            <h2>Create a new game or join an existing game</h2>
 
             <p>
                 <input
