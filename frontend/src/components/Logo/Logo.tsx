@@ -7,7 +7,7 @@ interface Props {
 export default function Logo(props: Props) {
     return (
         <img
-            src="../../../public/battleship.png"
+            src="/battleship.png"
             alt="Battleship"
             className={`logo ${props.className}`}/>
     );
