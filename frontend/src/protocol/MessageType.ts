@@ -14,6 +14,7 @@ export enum ResponseTypes {
     State = "state",
     Error = "error",
     Notification = "notification",
+    Log = "log"
 }
 
 export interface Request {

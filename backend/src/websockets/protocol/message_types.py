@@ -19,6 +19,7 @@ class ResponseTypes(str, Enum):
     STATE = "state"
     ERROR = "error"
     NOTIFICATION = "notification"
+    LOG = "log"
 
 
 class Request(BaseModel):

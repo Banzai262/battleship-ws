@@ -1,0 +1,68 @@
+.battle-log {
+    margin-top: 24px;
+
+    border: 2px solid #29496b;
+    border-radius: 8px;
+
+    background: #0f1b2d;
+    color: #d7e8f5;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 280px;
+
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.35);
+}
+
+.battle-log-content {
+    overflow-y: auto;
+    flex: 1;
+    padding: 12px;
+}
+
+.battle-log h2 {
+    margin: 0;
+    padding: 12px;
+
+    text-align: center;
+
+    color: white;
+
+    border-bottom: 2px solid #29496b;
+}
+
+.entry {
+    padding: 6px 4px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+
+    font-family: Consolas, Monaco, monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+
+    text-align: left;
+
+    white-space: pre-wrap;
+}
+
+.entry:last-child {
+    border-bottom: none;
+}
+
+.entry.system {
+    color: #8fd3ff;
+}
+
+.entry.combat {
+    color: #ffffff;
+}
+
+.entry.chat {
+    color: #a8ffb3;
+}
+
+.entry.victory {
+    color: #ffd54a;
+    font-weight: bold;
+}

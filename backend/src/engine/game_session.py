@@ -8,11 +8,26 @@ from backend.src.commands.command_handler import CommandHandler
 from backend.src.commands.commands import Command, PlaceShipCommand, StartGameCommand, FireCommand, PlaceRandom
 from backend.src.engine.errors import PlayerCountError, TurnError
 from backend.src.engine.game import PlayerId, Game, GamePhase, GameEvent
-from backend.src.engine.shot import ShotOutcome
+from backend.src.engine.shot import ShotOutcome, SHOT_OUTCOME_MAP
+from backend.src.websockets.protocol.log_event import LogEvent, LogKind
 from backend.src.websockets.protocol.responses import GetStateResponse
 
 """
 This class orchestrates player state and game flow.
+"""
+
+# TODO le fait que le combat log se fait d'ici, c'est pas ok, ça devriat être le frontend.
+#  EN cas de changement de langue, ce serait plus facile à gérer.
+#  Faudrait juste mettre plus d'info dans le log event
+"""
+{
+    "type": "log",
+    "kind": "combat",
+    "event": "fire",
+    "player": "Guillaume",
+    "row": 4,
+    "col": 7
+}
 """
 
 
@@ -38,6 +53,11 @@ class GameSession:
         self.last_activity = time.time()
         self.ready_event = asyncio.Event()
         self.game_phase_at_disconnect = GamePhase.WAITING_PLAYERS
+        self.log: list[LogEvent] = []
+
+    async def log_event(self, event: LogEvent):
+        self.log.append(event)
+        await self.broadcast_json(dict(event))
 
     def build_state(self, player_id: PlayerId, shot_outcome: ShotOutcome = None) -> GetStateResponse:
         opponent = self.game.get_opponent(player_id)
@@ -89,9 +109,18 @@ class GameSession:
         self.connected.add(player_id)
         self.game.add_player(player_id)
 
+        if len(self.players) == 1:
+            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message=f"🟢 {player_id} created the game."))
+        else:
+            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message=f"🔵 {player_id} joined the game."))
+
         if self.is_ready():
             self.game.phase = GamePhase.SETUP
             # TODO pas au bon endroit
+
+            await self.log_event(
+                LogEvent(kind=LogKind.SYSTEM, message="🔔 All players joined. Time to place your ships"))
+
             await self.game.events.put({
                 "type": GameEvent.PHASE_CHANGED,
                 "message": "All players joined. Time to place your ships"
@@ -204,6 +233,8 @@ class GameSession:
         result = await self.handler.execute(player_id, command)
 
         if self.game.boards[player_id].all_ships_placed():
+            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message=f"⚓ {player_id} is done deploying their fleet."))
+
             await self.game.events.put({
                 "type": GameEvent.SHIPS_PLACED,
                 "message": f"{player_id} has placed all their ships"
@@ -211,6 +242,8 @@ class GameSession:
             self.ready.add(player_id)
 
         if len(self.ready) == 2:
+            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message="⚔ Fleets deployed, may the battle begins!"))
+
             # start the game with a random player going first
             return await self.handler.execute(random.choice(self.players), StartGameCommand())
 
@@ -226,6 +259,12 @@ class GameSession:
         result = await self.handler.execute(player_id, command)
 
         row, col = command.coord
+
+        # TODO devrait pas envoyer de phrase complète
+        await self.log_event(LogEvent(kind=LogKind.COMBAT, message=f"🧨 {player_id} fired at {chr(65 + col)}{row + 1}"))
+        await self.log_event(
+            LogEvent(kind=LogKind.COMBAT, message=f"{SHOT_OUTCOME_MAP[result['result']]} {result['result'].upper()}"))
+
         await self.game.events.put({
             "type": GameEvent.SHOT_RESULT,
             "message": f"{player_id} fired at {row}, {col}. Result is {result['result']}"
@@ -237,6 +276,9 @@ class GameSession:
                 "message": f"{self.game.current_turn}, it's your turn now"
             })
         else:
+            await self.log_event(
+                LogEvent(kind=LogKind.VICTORY, message=f"🏆 Player {self.game.winner} has won the game!"))
+
             await self.game.events.put({
                 "type": GameEvent.GAME_WON,
                 "message": f"Player {self.game.winner} has won the game!"
