@@ -13,6 +13,7 @@ interface Props {
     state: GameState;
     playerName: string;
     logEntries: LogEvent[];
+    onSendMessage: (message: string) => void;
     onFire: (row: number, col: number) => void;
 }
 
@@ -66,7 +67,7 @@ export default function BattlePage(props: Props) {
 
             </div>
 
-            <BattleLog entries={props.logEntries}/>
+            <BattleLog entries={props.logEntries} onSendMessage={props.onSendMessage}/>
         </div>
     );
 }

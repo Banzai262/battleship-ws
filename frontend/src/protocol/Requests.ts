@@ -19,3 +19,7 @@ export interface FireRequest extends Request {
     row: number;
     col: number;
 }
+
+export interface ChatRequest extends Request {
+    message: string;
+}

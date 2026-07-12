@@ -26,3 +26,8 @@ class FireRequest(Request):
     type: RequestTypes = RequestTypes.FIRE
     row: int
     col: int
+
+
+class ChatRequest(Request):
+    type: RequestTypes = RequestTypes.CHAT
+    message: str

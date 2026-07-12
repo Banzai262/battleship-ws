@@ -242,7 +242,7 @@ class GameSession:
             self.ready.add(player_id)
 
         if len(self.ready) == 2:
-            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message="⚔ Fleets deployed, may the battle begins!"))
+            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message="⚔️ Fleets deployed, may the battle begins!"))
 
             # start the game with a random player going first
             return await self.handler.execute(random.choice(self.players), StartGameCommand())

@@ -8,10 +8,11 @@ from backend.src.engine.game import GamePhase, PlayerId
 from backend.src.engine.game_session import GameSession
 from backend.src.shared.render import render_grid, render_ship_status
 from backend.src.websockets.game_registry import GameRegistry
+from backend.src.websockets.protocol.log_event import LogEvent, LogKind
 from backend.src.websockets.protocol.message_types import RequestTypes, ResponseTypes
 from backend.src.websockets.protocol.notifications import Notification
 from backend.src.websockets.protocol.requests import CreateGameRequest, JoinGameRequest, GetStateRequest, \
-    PlaceRandomRequest, FireRequest
+    PlaceRandomRequest, FireRequest, ChatRequest
 from backend.src.websockets.protocol.responses import CreateGameResponse, JoinGameResponse, ErrorResponse
 
 app = FastAPI()
@@ -246,6 +247,12 @@ async def websocket_json(ws: WebSocket):
                     response = session.build_state(player_id)
 
                     await ws.send_json(response.model_dump(mode="json"))
+
+                case RequestTypes.CHAT:
+                    request = ChatRequest(**data)
+                    event = LogEvent(kind=LogKind.CHAT, message=f"🗨️ {player_id}: {request.message}")
+
+                    await session.log_event(event)
 
     except Exception as e:
         await ws.send_json({

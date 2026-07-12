@@ -30,8 +30,10 @@ The game can be played locally via a CLI (hotseat mode) or remotely by two playe
 - Players can issue commands at any time, but only valid turns are accepted
 - Game phase notifications (setup, play, finished)
 - Winner announcement
-- Disconnection handling
-- Player reconnection support
+- Disconnection handling*
+- Player reconnection support*
+
+*Terminal websocket interface only
 
 ### Technical features
 - UI-agnostic game engine
@@ -229,7 +231,7 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 ---
 
 ## Next Steps / Possible Improvements
-- [ ] In-game chat
+- [X] In-game chat
 - [X] Random placing of ships
 - [X] Automatic build pipeline
 - [ ] Persistent game storage (Redis or database)
@@ -237,13 +239,15 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 - [ ] Multiple simultaneous games per user
 - [ ] Authentication (JWT or sessions)
 - [X] Simple web frontend (keeping the engine UI-agnostic)
-- [ ] Ships visuals and manual placement from the web interface
+- [ ] Ships visuals and manual placement from the web interface (next)
+- [ ] Consistent look across the web interface
 - [ ] Matching web API to the command line API functionality wise
 - [ ] Other nice to have features for the web interface (QR code, mobile support, etc.)
 - [ ] AI opponent
-- [ ] Match history (should be next)
+- [X] Match history
 - [ ] Statistics
 - [ ] Rate limiting and abuse protection
+- [ ] Multi languages support
 - [ ] There are still a few bugs to iron out
 
 

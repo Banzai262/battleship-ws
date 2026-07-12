@@ -108,7 +108,12 @@ export default function App() {
         case GamePhases.SETUP:
             page = (
                 <AppLayout>
-                    <SetupPage state={gameState!} onRandomPlacement={() => client.placeRandom()}/>
+                    <SetupPage
+                        state={gameState!}
+                        logEntries={battleLog}
+                        onSendMessage={(message) => {
+                            client.chat(message)
+                        }} onRandomPlacement={() => client.placeRandom()}/>
                 </AppLayout>
             );
             break;
@@ -116,9 +121,16 @@ export default function App() {
         case GamePhases.IN_PROGRESS:
             return (
                 <AppLayout>
-                    <BattlePage state={gameState} playerName={playerName} logEntries={battleLog} onFire={(row, col) => {
-                        client.fire(row, col)
-                    }}/>
+                    <BattlePage
+                        state={gameState}
+                        playerName={playerName}
+                        logEntries={battleLog}
+                        onSendMessage={(message) => {
+                            client.chat(message)
+                        }}
+                        onFire={(row, col) => {
+                            client.fire(row, col)
+                        }}/>
                 </AppLayout>
             );
 
@@ -129,11 +141,15 @@ export default function App() {
                         won={gameState.winner === playerName}
                         ships={gameState.ships}
                         logEntries={battleLog}
+                        onSendMessage={(message) => {
+                            client.chat(message)
+                        }}
                         onReplay={() => {
-                        }} onBackHome={() => {
-                        client.disconnect();
-                        window.location.reload();
-                    }}/>
+                        }}
+                        onBackHome={() => {
+                            client.disconnect();
+                            window.location.reload();
+                        }}/>
                 </AppLayout>
             );
     }

@@ -1,4 +1,5 @@
 import {
+    type ChatRequest,
     type CreateGameRequest,
     type FireRequest,
     type GetStateRequest,
@@ -83,6 +84,15 @@ export class BattleshipClient {
             row: row,
             col: col
         };
+
+        this.send(request);
+    }
+
+    public chat(message: string): void {
+        const request: ChatRequest = {
+            type: RequestTypes.Chat,
+            message: message
+        }
 
         this.send(request);
     }
