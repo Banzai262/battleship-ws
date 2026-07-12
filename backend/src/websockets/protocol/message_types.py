@@ -10,6 +10,7 @@ class RequestTypes(str, Enum):
     PLACE_RANDOM = "place_random"
     FIRE = "fire"
     GET_STATE = "get_state"
+    CHAT = "chat"
 
 
 class ResponseTypes(str, Enum):
@@ -19,6 +20,7 @@ class ResponseTypes(str, Enum):
     STATE = "state"
     ERROR = "error"
     NOTIFICATION = "notification"
+    LOG = "log"
 
 
 class Request(BaseModel):

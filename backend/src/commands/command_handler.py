@@ -29,7 +29,7 @@ class CommandHandler:
 
             case FireCommand(coord):
                 result = await self.game.fire(player_id, coord)
-                return {"status": "ok", "type": "shot", "result": result.outcome}  # todo valider
+                return {"status": "ok", "type": "shot", "result": result.outcome}
 
             case StartGameCommand():
                 await self.game.start(player_id)

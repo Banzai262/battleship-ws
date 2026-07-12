@@ -1,10 +1,14 @@
 import type {ShipStatus} from "../../models/ShipStatus.ts";
 import ShipStatusPanel from "../../components/ShipStatusPanel/ShipStatusPanel.tsx";
 import "./GameOverPage.css";
+import BattleLog from "../../components/BattleLog/BattleLog.tsx";
+import type {LogEvent} from "../../protocol/LogEvent.ts";
 
 interface Props {
     won: boolean;
     ships: ShipStatus[];
+    logEntries: LogEvent[];
+    onSendMessage: (message: string) => void;
     onReplay: () => void;
     onBackHome: () => void;
 }
@@ -38,6 +42,8 @@ export default function GameOverPage(props: Props) {
                     Back to Home
                 </button>
             </div>
+
+            <BattleLog entries={props.logEntries} onSendMessage={props.onSendMessage}/>
         </div>
     );
 }

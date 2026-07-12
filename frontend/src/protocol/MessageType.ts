@@ -5,6 +5,7 @@ export enum RequestTypes {
     PlaceRandom = "place_random",
     Fire = "fire",
     GetState = "get_state",
+    Chat = "chat",
 }
 
 export enum ResponseTypes {
@@ -14,6 +15,7 @@ export enum ResponseTypes {
     State = "state",
     Error = "error",
     Notification = "notification",
+    Log = "log"
 }
 
 export interface Request {

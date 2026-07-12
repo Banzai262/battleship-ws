@@ -11,6 +11,7 @@ import "./App.css";
 import BattlePage from "./pages/Battle/BattlePage.tsx";
 import GameOverPage from "./pages/GameOver/GameOverPage.tsx";
 import AppLayout from "./components/AppLayout/AppLayout.tsx";
+import type {LogEvent} from "./protocol/LogEvent.ts";
 
 const client = new BattleshipClient();
 
@@ -20,13 +21,13 @@ export default function App() {
     const [screen, setScreen] = useState(Screens.Create);
     const [gameState, setGameState] = useState<GameState | null>(null);
     const [notification, setNotification] = useState<string | null>(null);
+    const [battleLog, setBattleLog] = useState<LogEvent[]>([]);
 
     let page;
 
     useEffect(() => {
         async function init() {
             await client.connect();
-
 
             client.onMessage((message) => {
                 switch (message.type) {
@@ -42,6 +43,10 @@ export default function App() {
                         setTimeout(() => {
                             setNotification(null);
                         }, 3000);
+                        break;
+
+                    case ResponseTypes.Log:
+                        setBattleLog(old => [...old, message]);
                         break;
 
                     case ResponseTypes.GameCreated:
@@ -103,7 +108,12 @@ export default function App() {
         case GamePhases.SETUP:
             page = (
                 <AppLayout>
-                    <SetupPage state={gameState!} onRandomPlacement={() => client.placeRandom()}/>
+                    <SetupPage
+                        state={gameState!}
+                        logEntries={battleLog}
+                        onSendMessage={(message) => {
+                            client.chat(message)
+                        }} onRandomPlacement={() => client.placeRandom()}/>
                 </AppLayout>
             );
             break;
@@ -111,10 +121,16 @@ export default function App() {
         case GamePhases.IN_PROGRESS:
             return (
                 <AppLayout>
-                    <BattlePage state={gameState} playerName={playerName} onFire={(row, col) => {
-                        // TODO peut-être un log à la Baldur's gate, commun au 2 joueurs, qui explique ce qui s'est passé
-                        client.fire(row, col)
-                    }}/>
+                    <BattlePage
+                        state={gameState}
+                        playerName={playerName}
+                        logEntries={battleLog}
+                        onSendMessage={(message) => {
+                            client.chat(message)
+                        }}
+                        onFire={(row, col) => {
+                            client.fire(row, col)
+                        }}/>
                 </AppLayout>
             );
 
@@ -124,11 +140,16 @@ export default function App() {
                     <GameOverPage
                         won={gameState.winner === playerName}
                         ships={gameState.ships}
+                        logEntries={battleLog}
+                        onSendMessage={(message) => {
+                            client.chat(message)
+                        }}
                         onReplay={() => {
-                        }} onBackHome={() => {
-                        client.disconnect();
-                        window.location.reload();
-                    }}/>
+                        }}
+                        onBackHome={() => {
+                            client.disconnect();
+                            window.location.reload();
+                        }}/>
                 </AppLayout>
             );
     }

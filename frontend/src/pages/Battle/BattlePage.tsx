@@ -6,10 +6,14 @@ import {useState} from "react";
 import type {Coordinate} from "../../types/Coordinate.ts";
 import TargetPanel from "../../components/TargetPanel/TargetPanel.tsx";
 import EnemyFleetPanel from "../../components/EnemyFleetPanel/EnemyFleetPanel.tsx";
+import BattleLog from "../../components/BattleLog/BattleLog.tsx";
+import type {LogEvent} from "../../protocol/LogEvent.ts";
 
 interface Props {
     state: GameState;
     playerName: string;
+    logEntries: LogEvent[];
+    onSendMessage: (message: string) => void;
     onFire: (row: number, col: number) => void;
 }
 
@@ -32,7 +36,7 @@ export default function BattlePage(props: Props) {
 
                 <div className="panel">
                     <h2>Your board</h2>
-                    <Board board={props.state.yourBoard} disableCells={true} showCoordinates={false}/>
+                    <Board board={props.state.yourBoard} disableCells={true} showCoordinates={true}/>
                 </div>
 
                 <div className="panel">
@@ -62,6 +66,8 @@ export default function BattlePage(props: Props) {
                 </div>
 
             </div>
+
+            <BattleLog entries={props.logEntries} onSendMessage={props.onSendMessage}/>
         </div>
     );
 }

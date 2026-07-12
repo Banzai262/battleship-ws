@@ -15,3 +15,10 @@ class ShotOutcome(str, Enum):
 class ShotResult:
     outcome: ShotOutcome
     ship: Optional[Ship] = None
+
+
+SHOT_OUTCOME_MAP = {
+    ShotOutcome.HIT: "🎯",
+    ShotOutcome.MISS: "❌",
+    ShotOutcome.SUNK: "💥"
+}

@@ -68,8 +68,6 @@ class Game:
     async def place_random(self, player_id: str, place_all: bool = False):
         board = self.boards[player_id]
 
-        print("Starting to place the ships randomly")
-
         # If overriding, clear existing ships
         # TODO place_all support
         # if place_all:
@@ -111,7 +109,6 @@ class Game:
                 "player": player_id
             })
 
-        print("All ships placed randomly")
         return {"status": "ok"}
 
     async def start(self, first_player: PlayerId):
