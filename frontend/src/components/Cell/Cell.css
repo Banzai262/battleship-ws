@@ -18,6 +18,30 @@
     background: #fff5f5;
 }
 
+.cell.clickable:hover:not(.preview) {
+    outline: 2px solid #d32f2f;
+    outline-offset: -2px;
+    background: #fff5f5;
+}
+
 .cell.disabled {
     cursor: default;
 }
+
+.cell.preview {
+    border: 2px dashed;
+    box-sizing: border-box;
+}
+
+.cell.preview.valid {
+    background: rgba(76, 175, 80, 0.35);
+    outline: 2px dashed #2e7d32;
+    outline-offset: -2px;
+}
+
+.cell.preview.invalid {
+    background: rgba(244, 67, 54, 0.35);
+    outline: 2px dashed #c62828;
+    outline-offset: -2px;
+}
+

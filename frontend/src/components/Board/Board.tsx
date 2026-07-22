@@ -1,10 +1,17 @@
 import CellComponent from "../Cell/Cell.tsx";
 import "./Board.css";
 import type {CellState} from "../../types/CellState.ts";
+import type {ShipToPlace} from "../../types/ShipToPlace.ts";
+import type {Coordinate} from "../../types/Coordinate.ts";
 
 
 interface Props {
-    board: CellState[][];
+    board: CellState[][]; // TODO surement devoir changer pour render les preview
+    // highlightCells: Coordinate[]; // TODO ??
+    previewCells?: Coordinate[];
+    placements?: ShipToPlace[];
+    occupiedCells?: Coordinate[];
+    previewValid?: boolean;
     disableCells: boolean;
     showCoordinates: boolean;
     onCellClick?: (row: number, col: number) => void;
@@ -12,18 +19,45 @@ interface Props {
     onMouseLeave?: () => void;
 }
 
+/*
+on pourrait passer un previewShip object au board
+
+interface PreviewShip {
+    ship: ShipStatus;
+    row: number;
+    col: number;
+    horizontal: boolean;
+    valid: boolean;
+}
+
+et le board compute les cells
+ */
+
+
+/*
+TODO problèmes avec le placement live
+- quand un bateau a été placé, faudrait le voir dans le board avec le bon emoji
+- faut un moyen de déselectionner
+- quand un ship est selected, une bannière dans le top pour indiquer de le placer en cliquant
+- message rouge quand on clique avec preview rouge?
+- ship placés devrait pas être sélectable
+ */
+
 export default function Board(props: Props) {
     function renderCells() {
         return props.board.map((row, rowIndex) =>
-            row.map((cell, colIndex) => (
-                <CellComponent
-                    key={`${rowIndex}-${colIndex}`}
-                    disabled={props.disableCells}
-                    cell={cell}
-                    onClick={() => props.onCellClick?.(rowIndex, colIndex)}
-                    onMouseEnter={() => props.onCellHover?.(rowIndex, colIndex)}
-                />
-            ))
+            row.map((cell, colIndex) =>
+                (
+                    <CellComponent
+                        key={`${rowIndex}-${colIndex}`}
+                        isPreview={props.previewCells?.some(c => c[0] === rowIndex && c[1] === colIndex) ? props.previewValid ? "valid" : "invalid" : undefined}
+                        isPlaced={props.previewCells && props.occupiedCells ? props.occupiedCells.some(c => c[0] === rowIndex && c[1] === colIndex) : false}
+                        disabled={props.disableCells}
+                        cell={cell}
+                        onClick={() => props.onCellClick?.(rowIndex, colIndex)}
+                        onMouseEnter={() => props.onCellHover?.(rowIndex, colIndex)}
+                    />
+                ))
         );
     }
 
