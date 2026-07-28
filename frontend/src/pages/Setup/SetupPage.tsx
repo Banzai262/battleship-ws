@@ -7,6 +7,7 @@ import {useState} from "react";
 import type {ShipStatus} from "../../models/ShipStatus.ts";
 import type {ShipToPlace} from "../../types/ShipToPlace.ts";
 import {PreviewValidationService} from "../../services/PreviewValidationService.ts";
+import {CellState} from "../../types/CellState.ts";
 
 interface Props {
     state: GameState;
@@ -38,9 +39,54 @@ export default function SetupPage(props: Props) {
         props.onAllShipsReady(placedShips);
     }
 
+    function placeShipsRandomly() {
+        const placed: ShipToPlace[] = [];
+        setPlacedShips([]);
+        props.state.ships.forEach((ship) => {
+            const toPlace: ShipToPlace = {
+                ship: ship,
+                row: 0,
+                col: 0,
+                horizontal: true
+            };
+            placed.push(toPlace);
+        });
+
+        setPlacedShips(placed);
+        props.onRandomPlacement();
+    }
+
     return (
         <>
+            <div
+                className={`setup-banner ${
+                    allShipsPlaced
+                        ? "ready"
+                        : selectedShip
+                            ? "ship-selected"
+                            : "no-selection"
+                }`}
+            >
+                <p>
+                {allShipsPlaced ? (
+                    <>
+                        ⚓ <strong>Your fleet is deployed!</strong> Review your ship placement, then click <strong>Ready</strong> to signal you're ready for battle.
+                    </>
+                ) : selectedShip ? (
+                    <>
+                        🚢 <strong>{selectedShip.name}</strong> selected. Move your cursor over the board to preview its placement. A <span className="valid-preview">green</span> preview indicates a valid position. Click to place the ship, or use <strong>Rotate Ship</strong> to change its orientation.
+                    </>
+                ) : (
+                    <>
+                        ℹ️ Select a ship from your fleet to begin placing it, or click
+                        <strong> Place ships randomly</strong> to automatically deploy your fleet.
+                    </>
+                )}
+                </p>
+            </div>
+
             <div className="setup-page">
+
                 <div className="ship-panel">
                     <h3>Your fleet</h3>
 
@@ -52,7 +98,9 @@ export default function SetupPage(props: Props) {
                             <div key={ship.name}
                                  className={`ship-placeholder ${selected ? "selected" : ""} ${placed ? "placed" : ""}`}
                                  onClick={() => {
-                                     setSelectedShip(ship)
+                                     if (!placed && !allShipsPlaced) {
+                                        setSelectedShip(ship)
+                                     }
                                  }}>
                                 <span className="ship-icon">
                                     {placed ? "✓" : ""}
@@ -73,7 +121,8 @@ export default function SetupPage(props: Props) {
                     </div>
 
                     <div className="ship-actions">
-                        <button onClick={props.onRandomPlacement}>Place ships randomly</button>
+                        <button onClick={() => setSelectedShip(null)} disabled={!selectedShip}>Unselect ship</button>
+                        <button onClick={placeShipsRandomly} disabled={allShipsPlaced}>Place ships randomly</button>
                         {/*TODO voir pour ne pas hardcode le 5*/}
                         <button onClick={placeShips} disabled={placedShips.length !== 5}>Ready</button>
                         {/*TODO add support for R to rotate later*/}
@@ -105,6 +154,8 @@ export default function SetupPage(props: Props) {
                                }
 
                                if (!previewValid) {
+                                   // todo message d'erreur (un peu mieux que ça, probablement un notification service)
+                                   alert("Ship cannot be placed here");
                                    return;
                                }
 
@@ -117,6 +168,10 @@ export default function SetupPage(props: Props) {
                                        horizontal: orientation === "horizontal"
                                    }
                                ]);
+
+                               previewCells.forEach(cell => {
+                                  props.state.yourBoard[cell[0]][cell[1]] = CellState.Ship;
+                               });
 
                                setSelectedShip(null);
                            }}

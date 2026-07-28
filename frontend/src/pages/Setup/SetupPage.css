@@ -28,9 +28,13 @@
             transform 0.1s;
 }
 
-.ship-placeholder:hover {
+.ship-placeholder:hover:not(.placed) {
     background: #f0f7ff;
     border-color: #3b82f6;
+}
+
+.ship-placeholder.placed {
+    cursor: default;
 }
 
 .ship-placeholder.selected {
@@ -108,4 +112,46 @@
 
 .fleet-status-value.complete {
     color: #2e7d32;
+}
+
+.setup-banner {
+    margin: 20px auto 30px;
+    max-width: 90%;
+    min-height: 60px;
+
+    padding: 14px 18px;
+
+    display: flex;
+    align-content: center;
+
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 600;
+
+    border-radius: 8px;
+}
+
+.setup-banner p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.no-selection {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.ship-selected {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.valid-preview {
+    color: #15803d;
+    font-weight: 700;
+}
+
+.ready {
+    background: #dbeafe;
+    color: #1d4ed8;
 }

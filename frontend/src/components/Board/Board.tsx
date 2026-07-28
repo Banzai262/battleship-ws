@@ -36,11 +36,10 @@ et le board compute les cells
 
 /*
 TODO problèmes avec le placement live
-- quand un bateau a été placé, faudrait le voir dans le board avec le bon emoji
-- faut un moyen de déselectionner
-- quand un ship est selected, une bannière dans le top pour indiquer de le placer en cliquant
-- message rouge quand on clique avec preview rouge?
-- ship placés devrait pas être sélectable
+- implémenter le backend (done je crois, faut juste le caller)
+- message rouge quand on clique avec preview rouge? (live y'a une alerte)
+- le bouton ready a l,air broken (du moins avec le placement random, ça chie un peu live)
+- faut un feedback quand on click sur ready
  */
 
 export default function Board(props: Props) {
