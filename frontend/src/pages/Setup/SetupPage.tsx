@@ -21,7 +21,7 @@ export default function SetupPage(props: Props) {
     const previewValidationService = new PreviewValidationService();
 
     const [selectedShip, setSelectedShip] = useState<ShipStatus | null>(null);
-    const [orientation, setOrientation] = useState<"horizontal" | "vertical">("horizontal"); // TODO à voir
+    const [orientation, setOrientation] = useState<"horizontal" | "vertical">("horizontal");
 
     const [preview, setPreview] = useState<{ row: number, col: number } | null>(null);
     const [placedShips, setPlacedShips] = useState<ShipToPlace[]>([]);
@@ -35,7 +35,10 @@ export default function SetupPage(props: Props) {
     const placedCount = placedShips.length;
     const allShipsPlaced = placedCount === props.state.ships.length;
 
+    const [readyButtonClicked, setReadyButtonClicked] = useState<boolean>(false);
+
     function placeShips() {
+        setReadyButtonClicked(true);
         props.onAllShipsReady(placedShips);
     }
 
@@ -53,6 +56,7 @@ export default function SetupPage(props: Props) {
         });
 
         setPlacedShips(placed);
+        setReadyButtonClicked(true);
         props.onRandomPlacement();
     }
 
@@ -68,20 +72,28 @@ export default function SetupPage(props: Props) {
                 }`}
             >
                 <p>
-                {allShipsPlaced ? (
-                    <>
-                        ⚓ <strong>Your fleet is deployed!</strong> Review your ship placement, then click <strong>Ready</strong> to signal you're ready for battle.
-                    </>
-                ) : selectedShip ? (
-                    <>
-                        🚢 <strong>{selectedShip.name}</strong> selected. Move your cursor over the board to preview its placement. A <span className="valid-preview">green</span> preview indicates a valid position. Click to place the ship, or use <strong>Rotate Ship</strong> to change its orientation.
-                    </>
-                ) : (
-                    <>
-                        ℹ️ Select a ship from your fleet to begin placing it, or click
-                        <strong> Place ships randomly</strong> to automatically deploy your fleet.
-                    </>
-                )}
+                    {allShipsPlaced && readyButtonClicked ? (
+                        <>
+                            ⚓ <strong>Your fleet is deployed!</strong> Waiting for opponent...
+                        </>
+                    ) : allShipsPlaced ? (
+                        <>
+                            ⚓ <strong>Your fleet is deployed!</strong> Review your ship placement, then
+                            click <strong>Ready</strong> to signal you're ready for battle.
+                        </>
+                    ) : selectedShip ? (
+                        <>
+                            🚢 <strong>{selectedShip.name}</strong> selected. Move your cursor over the board to preview
+                            its placement. A <span className="valid-preview">green</span> preview indicates a valid
+                            position. Click to place the ship, or use <strong>Rotate Ship</strong> to change its
+                            orientation.
+                        </>
+                    ) : (
+                        <>
+                            ℹ️ Select a ship from your fleet to begin placing it, or click
+                            <strong> Place ships randomly</strong> to automatically deploy your fleet.
+                        </>
+                    )}
                 </p>
             </div>
 
@@ -99,7 +111,7 @@ export default function SetupPage(props: Props) {
                                  className={`ship-placeholder ${selected ? "selected" : ""} ${placed ? "placed" : ""}`}
                                  onClick={() => {
                                      if (!placed && !allShipsPlaced) {
-                                        setSelectedShip(ship)
+                                         setSelectedShip(ship)
                                      }
                                  }}>
                                 <span className="ship-icon">
@@ -123,8 +135,7 @@ export default function SetupPage(props: Props) {
                     <div className="ship-actions">
                         <button onClick={() => setSelectedShip(null)} disabled={!selectedShip}>Unselect ship</button>
                         <button onClick={placeShipsRandomly} disabled={allShipsPlaced}>Place ships randomly</button>
-                        {/*TODO voir pour ne pas hardcode le 5*/}
-                        <button onClick={placeShips} disabled={placedShips.length !== 5}>Ready</button>
+                        <button onClick={placeShips} disabled={!allShipsPlaced || readyButtonClicked}>Ready</button>
                         {/*TODO add support for R to rotate later*/}
                         <button onClick={() => {
                             setOrientation(o => o === "horizontal" ? "vertical" : "horizontal");
@@ -154,7 +165,7 @@ export default function SetupPage(props: Props) {
                                }
 
                                if (!previewValid) {
-                                   // todo message d'erreur (un peu mieux que ça, probablement un notification service)
+                                   // TODO at some point, notification service
                                    alert("Ship cannot be placed here");
                                    return;
                                }
@@ -170,7 +181,7 @@ export default function SetupPage(props: Props) {
                                ]);
 
                                previewCells.forEach(cell => {
-                                  props.state.yourBoard[cell[0]][cell[1]] = CellState.Ship;
+                                   props.state.yourBoard[cell[0]][cell[1]] = CellState.Ship;
                                });
 
                                setSelectedShip(null);
@@ -183,39 +194,3 @@ export default function SetupPage(props: Props) {
         </>
     );
 }
-
-/**
- * TODO Donc je vais implémenter un click to place sur les bateaux, parce que le drag n drop de html 5 est un peu du caca
- *
- * La logique est la suivante:
- * 1. Cliquer sur un bateau pour le selectionner
- * 2. On déplace la souris au-dessus du board. Ça va afficher un preview en vert ou rouge. Touche R pour la rotation.
- * 3. Quand le preview est vert, on peut cliquer pour placer le bateau à cet endroit. Le bateau devient comme grisé dans la liste à gauche.
- * 4. On fait ça pour tous les bateaux.
- * 5. Quand tout est placé, le bouton Ready ou Place se débloque.
- * 6. On fait le call au backend, qui place tous les ships d'une shot.
- *
- * Le bouton Random existe encore, et pour l'instant, il override les bateaux déjà placés. On verra plus tard pour changer ceci.
- *
- * On va envoyer un array de place ship command au backend, avec le nom, les coord de départ, et horizontal True ou False
- */
-
-
-/*
-TODO
-
-PROCHAINES ÉTAPES:
-
-gérer le preview qui est ici, ça doit ajouter toutes les cells, donc faut une liste (ou la longueur du ship?)
-
-probablement qu'on envoit le preview dans le board
-si la cell est dans le preview, on le render différemment
-
-durant le preview, faut valider si le placement est bon pour highlighter de la bonne couleur (service de validation)
-donc durant preview, en hoverant, ça render en vert pâle et pointillé si validation ok, sinon rouge pâle et pointillé
-quand on clique pour placer, ça va être en vert plus foncé sans pointillés
-
-quand on clique, faire toute la logique de setter un ShipToPlace
-
-puis quand ready, la logique de caller le backend
- */

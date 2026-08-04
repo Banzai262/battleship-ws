@@ -198,26 +198,14 @@ async def websocket_json(ws: WebSocket):
                             {"type": ResponseTypes.GAME_READY}
                         )
 
-                # Receives
-                # "type": "place",
-                # "ship": "carrier"
-                # "row": 0
-                # "col": 2
-                # "horizontal": true
-
-                # Response
-                # "type": "ship_placed",
-                # "ship": "carrier"
-
-                # TODO je pense qu'il va recevoir un array de ships à placer
                 case RequestTypes.PLACE:
                     request = PlaceShipsRequest(**data)
 
-                    for ship in request.ships:
+                    for s in request.ships:
                         command = PlaceShipCommand(
-                            ship_name=ship.ship_name,
-                            start=Coordinate(row=ship.row, col=ship.col),  # TODO pas certain de ceci
-                            horizontal=ship.horizontal
+                            ship_name=s.ship.name,
+                            start=(int(s.row), int(s.col)),
+                            horizontal=s.horizontal
                         )
 
                         result = await session.handle_command(player_id, command)

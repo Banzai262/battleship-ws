@@ -6,8 +6,7 @@ import type {Coordinate} from "../../types/Coordinate.ts";
 
 
 interface Props {
-    board: CellState[][]; // TODO surement devoir changer pour render les preview
-    // highlightCells: Coordinate[]; // TODO ??
+    board: CellState[][];
     previewCells?: Coordinate[];
     placements?: ShipToPlace[];
     occupiedCells?: Coordinate[];
@@ -18,29 +17,6 @@ interface Props {
     onCellHover?: (row: number, col: number) => void;
     onMouseLeave?: () => void;
 }
-
-/*
-on pourrait passer un previewShip object au board
-
-interface PreviewShip {
-    ship: ShipStatus;
-    row: number;
-    col: number;
-    horizontal: boolean;
-    valid: boolean;
-}
-
-et le board compute les cells
- */
-
-
-/*
-TODO problèmes avec le placement live
-- implémenter le backend (done je crois, faut juste le caller)
-- message rouge quand on clique avec preview rouge? (live y'a une alerte)
-- le bouton ready a l,air broken (du moins avec le placement random, ça chie un peu live)
-- faut un feedback quand on click sur ready
- */
 
 export default function Board(props: Props) {
     function renderCells() {

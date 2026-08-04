@@ -27,11 +27,6 @@
     padding-bottom: 10px;
 }
 
-.ship-panel h2 {
-    margin: 0 0 12px 0;
-    color: #222;
-}
-
 .ship-row {
     display: grid;
     grid-template-columns: 28px 1fr auto;

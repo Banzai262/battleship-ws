@@ -11,6 +11,9 @@
 
 .game-over-body {
     margin: 50px 0;
+
+    display: flex;
+    justify-content: center;
 }
 
 .game-over-actions {

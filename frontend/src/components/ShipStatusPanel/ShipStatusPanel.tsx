@@ -23,7 +23,7 @@ export default function ShipStatusPanel(props: Props) {
     return (
         <div className="ship-panel">
 
-            <h2>Your fleet</h2>
+            <h3>Your fleet</h3>
 
             {props.ships.map(ship => (
                 <div key={ship.name} className="ship-row">
