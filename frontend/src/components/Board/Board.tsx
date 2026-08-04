@@ -1,10 +1,16 @@
 import CellComponent from "../Cell/Cell.tsx";
 import "./Board.css";
 import type {CellState} from "../../types/CellState.ts";
+import type {ShipToPlace} from "../../types/ShipToPlace.ts";
+import type {Coordinate} from "../../types/Coordinate.ts";
 
 
 interface Props {
     board: CellState[][];
+    previewCells?: Coordinate[];
+    placements?: ShipToPlace[];
+    occupiedCells?: Coordinate[];
+    previewValid?: boolean;
     disableCells: boolean;
     showCoordinates: boolean;
     onCellClick?: (row: number, col: number) => void;
@@ -15,15 +21,18 @@ interface Props {
 export default function Board(props: Props) {
     function renderCells() {
         return props.board.map((row, rowIndex) =>
-            row.map((cell, colIndex) => (
-                <CellComponent
-                    key={`${rowIndex}-${colIndex}`}
-                    disabled={props.disableCells}
-                    cell={cell}
-                    onClick={() => props.onCellClick?.(rowIndex, colIndex)}
-                    onMouseEnter={() => props.onCellHover?.(rowIndex, colIndex)}
-                />
-            ))
+            row.map((cell, colIndex) =>
+                (
+                    <CellComponent
+                        key={`${rowIndex}-${colIndex}`}
+                        isPreview={props.previewCells?.some(c => c[0] === rowIndex && c[1] === colIndex) ? props.previewValid ? "valid" : "invalid" : undefined}
+                        isPlaced={props.previewCells && props.occupiedCells ? props.occupiedCells.some(c => c[0] === rowIndex && c[1] === colIndex) : false}
+                        disabled={props.disableCells}
+                        cell={cell}
+                        onClick={() => props.onCellClick?.(rowIndex, colIndex)}
+                        onMouseEnter={() => props.onCellHover?.(rowIndex, colIndex)}
+                    />
+                ))
         );
     }
 

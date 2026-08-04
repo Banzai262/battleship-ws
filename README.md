@@ -239,7 +239,8 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 - [ ] Multiple simultaneous games per user
 - [ ] Authentication (JWT or sessions)
 - [X] Simple web frontend (keeping the engine UI-agnostic)
-- [ ] Ships visuals and manual placement from the web interface (next)
+- [X] Ships visuals and manual placement from the web interface
+- [ ] Drag-n-drop to place, R to rotate, move placed ship (next-ish)
 - [ ] Consistent look across the web interface
 - [ ] Matching web API to the command line API functionality wise
 - [ ] Other nice to have features for the web interface (QR code, mobile support, etc.)
@@ -247,7 +248,7 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 - [X] Match history
 - [ ] Statistics
 - [ ] Rate limiting and abuse protection
-- [ ] Multi languages support
+- [ ] Multi languages support (probably next)
 - [ ] There are still a few bugs to iron out
 
 

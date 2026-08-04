@@ -2,17 +2,18 @@ import asyncio
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from backend.src.commands.command_parser import parse_command
-from backend.src.commands.commands import PlaceRandom, FireCommand
+from backend.src.commands.commands import PlaceRandom, FireCommand, PlaceShipCommand
 from backend.src.engine.errors import ERROR_CODES
 from backend.src.engine.game import GamePhase, PlayerId
 from backend.src.engine.game_session import GameSession
+from backend.src.engine.ships import Coordinate
 from backend.src.shared.render import render_grid, render_ship_status
 from backend.src.websockets.game_registry import GameRegistry
 from backend.src.websockets.protocol.log_event import LogEvent, LogKind
 from backend.src.websockets.protocol.message_types import RequestTypes, ResponseTypes
 from backend.src.websockets.protocol.notifications import Notification
 from backend.src.websockets.protocol.requests import CreateGameRequest, JoinGameRequest, GetStateRequest, \
-    PlaceRandomRequest, FireRequest, ChatRequest
+    PlaceRandomRequest, FireRequest, ChatRequest, PlaceShipsRequest
 from backend.src.websockets.protocol.responses import CreateGameResponse, JoinGameResponse, ErrorResponse
 
 app = FastAPI()
@@ -197,18 +198,25 @@ async def websocket_json(ws: WebSocket):
                             {"type": ResponseTypes.GAME_READY}
                         )
 
-                # Receives
-                # "type": "place",
-                # "ship": "carrier"
-                # "row": 0
-                # "col": 2
-                # "horizontal": true
+                case RequestTypes.PLACE:
+                    request = PlaceShipsRequest(**data)
 
-                # Response
-                # "type": "ship_placed",
-                # "ship": "carrier"
-                case "place":
-                    pass
+                    for s in request.ships:
+                        command = PlaceShipCommand(
+                            ship_name=s.ship.name,
+                            start=(int(s.row), int(s.col)),
+                            horizontal=s.horizontal
+                        )
+
+                        result = await session.handle_command(player_id, command)
+                        if result["status"] == "error":
+                            await ws.send_json(ErrorResponse(message=result["message"]).model_dump(mode="json"))
+                            continue
+
+                        notif = Notification(message="Your fleet has been deployed, waiting for other player")
+                        await ws.send_json(notif.model_dump(mode="json"))
+
+                        await session.broadcast_state()
 
                 case RequestTypes.PLACE_RANDOM:
                     request = PlaceRandomRequest(**data)
@@ -224,13 +232,6 @@ async def websocket_json(ws: WebSocket):
 
                     await session.broadcast_state()
 
-                # Receives
-                # "type": "fire",
-                # "row": 0
-                # "col": 2
-
-                # Response
-                # "type": "hit" | "missed" | "sunk",
                 case RequestTypes.FIRE:
                     request = FireRequest(**data)
 

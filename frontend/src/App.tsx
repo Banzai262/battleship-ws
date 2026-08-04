@@ -113,7 +113,12 @@ export default function App() {
                         logEntries={battleLog}
                         onSendMessage={(message) => {
                             client.chat(message)
-                        }} onRandomPlacement={() => client.placeRandom()}/>
+                        }}
+                        onRandomPlacement={() => client.placeRandom()}
+                        onAllShipsReady={(ships) => {
+                            client.placeShips(ships)
+                        }}
+                    />
                 </AppLayout>
             );
             break;

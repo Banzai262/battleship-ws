@@ -4,9 +4,11 @@ import {
     type FireRequest,
     type GetStateRequest,
     type JoinGameRequest,
-    type PlaceRandomRequest
+    type PlaceRandomRequest,
+    type PlaceShipsRequest
 } from "../protocol/Requests.ts";
 import {RequestTypes} from "../protocol/MessageType.ts";
+import type {ShipToPlace} from "../types/ShipToPlace.ts";
 
 export class BattleshipClient {
     private ws?: WebSocket;
@@ -73,6 +75,15 @@ export class BattleshipClient {
         const request: PlaceRandomRequest = {
             type: RequestTypes.PlaceRandom,
             override: true,
+        };
+
+        this.send(request);
+    }
+
+    public placeShips(ships: ShipToPlace[]): void {
+        const request: PlaceShipsRequest = {
+            type: RequestTypes.Place,
+            ships: ships
         };
 
         this.send(request);

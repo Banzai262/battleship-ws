@@ -3,17 +3,20 @@ import "./Cell.css";
 
 interface Props {
     cell: CellState;
+    isPreview?: "valid" | "invalid";
+    isPlaced: boolean;
     disabled: boolean
     onClick?: () => void;
     onMouseEnter?: () => void;
 }
 
-export default function CellComponent({cell, disabled, onClick, onMouseEnter}: Props) {
+export default function CellComponent(props: Props) {
     return (
-        <button className={`cell ${disabled ? "disabled" : "clickable"}`}
-                onClick={onClick}
-                onMouseEnter={onMouseEnter}>
-            {CellMap(cell)}
+        <button
+            className={`cell ${props.disabled ? "disabled" : "clickable"} ${props.isPlaced ? "placed" : ""} ${props.isPreview ? `preview ${props.isPreview}` : ""}`}
+            onClick={props.onClick}
+            onMouseEnter={props.onMouseEnter}>
+            {CellMap(props.cell)}
         </button>
     );
 }

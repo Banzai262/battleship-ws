@@ -24,18 +24,6 @@
     align-items: start;
 }
 
-.panel {
-    padding: 20px;
-
-    background: #fafafa;
-
-    border: 1px solid #ddd;
-    border-radius: 10px;
-
-    width: fit-content;
-    min-height: 180px;
-}
-
 .panel h2 {
     margin-top: 0;
     margin-bottom: 16px;
