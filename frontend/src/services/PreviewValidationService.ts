@@ -65,19 +65,3 @@ export class PreviewValidationService {
         return positions;
     }
 }
-
-/*
-
-permet de faire ceci
-
-peut colorer en fonction du résultat
-
-tout part de placements
-
-const occupied = service.computeOccupiedCells(placements);
-
-const preview = service.computePositions(...);
-
-const valid = service.isPreviewValid(preview, occupied);
-
- */
