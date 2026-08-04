@@ -249,6 +249,7 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 - [ ] Statistics
 - [ ] Rate limiting and abuse protection
 - [ ] Multi languages support (probably next)
+- [ ] Mobile version
 - [ ] There are still a few bugs to iron out
 
 
