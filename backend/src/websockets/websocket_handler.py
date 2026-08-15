@@ -241,6 +241,7 @@ async def websocket_json(ws: WebSocket):
                         await ws.send_json(ErrorResponse(message=result["message"]).model_dump(mode="json"))
                         continue
 
+                    # TODO mettre un objet dans le résultat, pour pouvoir le traduire facilement
                     await session.broadcast_state(result["result"])
 
                 case RequestTypes.GET_STATE:

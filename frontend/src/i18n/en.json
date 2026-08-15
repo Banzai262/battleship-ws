@@ -1,0 +1,26 @@
+{
+  "battle": {},
+  "buttons": {
+    "createGame": "Create Game",
+    "joinGame": "Join Game",
+    "ready": "Ready"
+  },
+  "createGame": {
+    "codePlaceholder": "Code",
+    "haveCode": "If you already have a game code, enter it below",
+    "namePlaceholder": "Player name",
+    "title": "Create a new game or join an existing game"
+  },
+  "gameOver": {},
+  "setup": {
+    "banner": {
+      "fleetDeployedAndWaiting": "<0>Your fleet is deployed!</0> Waiting for opponent...",
+      "shipSelected": "<0>{{ship}}</0> selected. Move your cursor over the board to preview its placement. A <1>green</1> preview indicates a valid position. Click to place the ship, or use <2>Rotate Ship</2> to change its orientation."
+    }
+  },
+  "waiting": {
+    "shareCode": "Share this code with your opponent",
+    "title": "Game Created",
+    "waitingForOpponent": "Waiting for opponent"
+  }
+}

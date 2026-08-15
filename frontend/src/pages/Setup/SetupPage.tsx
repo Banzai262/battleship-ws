@@ -8,6 +8,7 @@ import type {ShipStatus} from "../../models/ShipStatus.ts";
 import type {ShipToPlace} from "../../types/ShipToPlace.ts";
 import {PreviewValidationService} from "../../services/PreviewValidationService.ts";
 import {CellState} from "../../types/CellState.ts";
+import {Trans, useTranslation} from "react-i18next";
 
 interface Props {
     state: GameState;
@@ -37,6 +38,8 @@ export default function SetupPage(props: Props) {
 
     const [readyButtonClicked, setReadyButtonClicked] = useState<boolean>(false);
 
+    const {t} = useTranslation();
+
     function placeShips() {
         setReadyButtonClicked(true);
         props.onAllShipsReady(placedShips);
@@ -60,6 +63,8 @@ export default function SetupPage(props: Props) {
         props.onRandomPlacement();
     }
 
+    // TODO largeur des éléments (chat et banner)
+
     return (
         <>
             <div
@@ -74,19 +79,25 @@ export default function SetupPage(props: Props) {
                 <p>
                     {allShipsPlaced && readyButtonClicked ? (
                         <>
-                            ⚓ <strong>Your fleet is deployed!</strong> Waiting for opponent...
+                            ⚓{" "}
+                            <Trans i18nKey="setup.banner.fleetDeployedAndWaiting" components={{0: <strong/>}}/>
                         </>
                     ) : allShipsPlaced ? (
                         <>
                             ⚓ <strong>Your fleet is deployed!</strong> Review your ship placement, then
-                            click <strong>Ready</strong> to signal you're ready for battle.
+                            click <strong>{t("buttons.ready")}</strong> to signal you're ready for battle.
                         </>
                     ) : selectedShip ? (
                         <>
-                            🚢 <strong>{selectedShip.name}</strong> selected. Move your cursor over the board to preview
-                            its placement. A <span className="valid-preview">green</span> preview indicates a valid
-                            position. Click to place the ship, or use <strong>Rotate Ship</strong> to change its
-                            orientation.
+                            🚢{" "}
+                            <Trans i18nKey="setup.banner.shipSelected"
+                                   values={{ship: selectedShip.name}}
+                                   components={{
+                                       0: <strong/>,
+                                       1: <span className="valid-preview"/>,
+                                       2: <strong/>
+                                   }}
+                            />
                         </>
                     ) : (
                         <>

@@ -1,0 +1,24 @@
+{
+  "battle": {},
+  "buttons": {
+    "createGame": "Créer une partie",
+    "joinGame": "Rejoindre une partie"
+  },
+  "createGame": {
+    "codePlaceholder": "Code",
+    "haveCode": "Si vous avez un code de partie, entrez-le ci-dessous",
+    "namePlaceholder": "Nom du joueur",
+    "title": "Créer une nouvelle partie ou rejoindre une partie existente"
+  },
+  "gameOver": {},
+  "setup": {
+    "banner": {
+      "shipSelected": "<0>{{ship}}</0> selected. Move your cursor over the board to preview its placement. A <1>green</1> preview indicates a valid position. Click to place the ship, or use <2>Rotate Ship</2> to change its orientation."
+    }
+  },
+  "waiting": {
+    "shareCode": "Partage ce code avec ton adversaire",
+    "title": "Partie créée",
+    "waitingForOpponent": "En attente d'un adversaire"
+  }
+}

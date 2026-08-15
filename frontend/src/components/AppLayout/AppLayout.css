@@ -1,0 +1,15 @@
+.app-layout {
+    position: relative;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.language-switcher {
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+}

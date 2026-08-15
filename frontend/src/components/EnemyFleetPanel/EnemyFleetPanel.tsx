@@ -1,3 +1,5 @@
+import "./EnemyFleetPanel.css";
+
 interface Props {
     shipsSunk: number;
 }
