@@ -84,8 +84,8 @@ export default function SetupPage(props: Props) {
                         </>
                     ) : allShipsPlaced ? (
                         <>
-                            ⚓ <strong>Your fleet is deployed!</strong> Review your ship placement, then
-                            click <strong>{t("buttons.ready")}</strong> to signal you're ready for battle.
+                            ⚓{" "}
+                            <Trans i18nKey="setup.banner.fleetDeployed" components={{0: <strong/>}}/>
                         </>
                     ) : selectedShip ? (
                         <>
@@ -101,8 +101,8 @@ export default function SetupPage(props: Props) {
                         </>
                     ) : (
                         <>
-                            ℹ️ Select a ship from your fleet to begin placing it, or click
-                            <strong> Place ships randomly</strong> to automatically deploy your fleet.
+                            ℹ️{" "}
+                            <Trans i18nKey="setup.banner.selectShipInstructions" components={{0: <strong/>}}/>
                         </>
                     )}
                 </p>
@@ -111,7 +111,7 @@ export default function SetupPage(props: Props) {
             <div className="setup-page">
 
                 <div className="ship-panel">
-                    <h3>Your fleet</h3>
+                    <h3>{t("setup.yourFleet")}</h3>
 
                     {props.state.ships.map(ship => {
                         const placed = placedShips.some(s => s.ship.name === ship.name);
@@ -138,15 +138,18 @@ export default function SetupPage(props: Props) {
 
                         <div className={`fleet-status-value ${allShipsPlaced ? "complete" : ""}`}>
                             {allShipsPlaced
-                                ? `✓ ${placedCount} / ${props.state.ships.length} ships placed`
-                                : `${placedCount} / ${props.state.ships.length} ships placed`}
+                                ? `✓ ${placedCount} / ${props.state.ships.length} ${t("setup.shipsPlaced")}`
+                                : `${placedCount} / ${props.state.ships.length} ${t("setup.shipsPlaced")}`}
                         </div>
                     </div>
 
                     <div className="ship-actions">
-                        <button onClick={() => setSelectedShip(null)} disabled={!selectedShip}>Unselect ship</button>
-                        <button onClick={placeShipsRandomly} disabled={allShipsPlaced}>Place ships randomly</button>
-                        <button onClick={placeShips} disabled={!allShipsPlaced || readyButtonClicked}>Ready</button>
+                        <button onClick={() => setSelectedShip(null)}
+                                disabled={!selectedShip}>{t("buttons.unselectShip")}</button>
+                        <button onClick={placeShipsRandomly}
+                                disabled={allShipsPlaced}>{t("buttons.placeRandomly")}</button>
+                        <button onClick={placeShips}
+                                disabled={!allShipsPlaced || readyButtonClicked}>{t("buttons.ready")}</button>
                         {/*TODO add support for R to rotate later*/}
                         <button onClick={() => {
                             setOrientation(o => o === "horizontal" ? "vertical" : "horizontal");

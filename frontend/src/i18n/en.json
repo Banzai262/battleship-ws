@@ -3,7 +3,9 @@
   "buttons": {
     "createGame": "Create Game",
     "joinGame": "Join Game",
-    "ready": "Ready"
+    "placeRandomly": "Place ships randomly",
+    "ready": "Ready",
+    "unselectShip": "Unselect ship"
   },
   "createGame": {
     "codePlaceholder": "Code",
@@ -14,9 +16,13 @@
   "gameOver": {},
   "setup": {
     "banner": {
+      "fleetDeployed": "<0>Your fleet is deployed!</0> Review your ship placement, then click <0>Ready</0> to signal you're ready for battle.",
       "fleetDeployedAndWaiting": "<0>Your fleet is deployed!</0> Waiting for opponent...",
+      "selectShipInstructions": "Select a ship from your fleet to begin placing it, or click <0> Place ships randomly</0> to automatically deploy your fleet.",
       "shipSelected": "<0>{{ship}}</0> selected. Move your cursor over the board to preview its placement. A <1>green</1> preview indicates a valid position. Click to place the ship, or use <2>Rotate Ship</2> to change its orientation."
-    }
+    },
+    "shipsPlaced": "ships placed",
+    "yourFleet": "Your fleet"
   },
   "waiting": {
     "shareCode": "Share this code with your opponent",
