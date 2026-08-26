@@ -110,16 +110,16 @@ class GameSession:
         self.game.add_player(player_id)
 
         if len(self.players) == 1:
-            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message=f"🟢 {player_id} created the game."))
+            await self.log_event(LogEvent(kind=LogKind.SYSTEM, messageKey="battlelog.event.playerCreatedGame", interpolationData={"player": player_id}))
         else:
-            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message=f"🔵 {player_id} joined the game."))
+            await self.log_event(LogEvent(kind=LogKind.SYSTEM, messageKey="battlelog.event.playerJoinedGame", interpolationData={"player": player_id}))
 
         if self.is_ready():
             self.game.phase = GamePhase.SETUP
             # TODO pas au bon endroit
 
             await self.log_event(
-                LogEvent(kind=LogKind.SYSTEM, message="🔔 All players joined. Time to place your ships"))
+                LogEvent(kind=LogKind.SYSTEM, messageKey="battlelog.event.allPlayersJoined"))
 
             await self.game.events.put({
                 "type": GameEvent.PHASE_CHANGED,
@@ -233,7 +233,7 @@ class GameSession:
         result = await self.handler.execute(player_id, command)
 
         if self.game.boards[player_id].all_ships_placed():
-            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message=f"⚓ {player_id} is done deploying their fleet."))
+            await self.log_event(LogEvent(kind=LogKind.SYSTEM, messageKey="battlelog.event.playerFleetDeployed", interpolationData={"player": player_id}))
 
             await self.game.events.put({
                 "type": GameEvent.SHIPS_PLACED,
@@ -242,7 +242,7 @@ class GameSession:
             self.ready.add(player_id)
 
         if len(self.ready) == 2:
-            await self.log_event(LogEvent(kind=LogKind.SYSTEM, message="⚔️ Fleets deployed, may the battle begins!"))
+            await self.log_event(LogEvent(kind=LogKind.SYSTEM, messageKey="battlelog.event.allFleetsDeployed"))
 
             # start the game with a random player going first
             return await self.handler.execute(random.choice(self.players), StartGameCommand())
@@ -260,10 +260,10 @@ class GameSession:
 
         row, col = command.coord
 
-        # TODO devrait pas envoyer de phrase complète
-        await self.log_event(LogEvent(kind=LogKind.COMBAT, message=f"🧨 {player_id} fired at {chr(65 + col)}{row + 1}"))
+        await self.log_event(LogEvent(kind=LogKind.COMBAT, messageKey="battlelog.event.shotFired",
+                                      interpolationData={"player": player_id, "cell": f"{chr(65 + col)}{row + 1}"}))
         await self.log_event(
-            LogEvent(kind=LogKind.COMBAT, message=f"{SHOT_OUTCOME_MAP[result['result']]} {result['result'].upper()}"))
+            LogEvent(kind=LogKind.COMBAT, messageKey=f"battlelog.event.shotOutcome.{result['result'].lower()}"))
 
         await self.game.events.put({
             "type": GameEvent.SHOT_RESULT,
@@ -277,7 +277,7 @@ class GameSession:
             })
         else:
             await self.log_event(
-                LogEvent(kind=LogKind.VICTORY, message=f"🏆 Player {self.game.winner} has won the game!"))
+                LogEvent(kind=LogKind.VICTORY, messageKey="battlelog.event.winner", interpolationData={"winner": self.game.winner}))
 
             await self.game.events.put({
                 "type": GameEvent.GAME_WON,

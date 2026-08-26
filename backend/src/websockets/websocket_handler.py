@@ -252,7 +252,8 @@ async def websocket_json(ws: WebSocket):
 
                 case RequestTypes.CHAT:
                     request = ChatRequest(**data)
-                    event = LogEvent(kind=LogKind.CHAT, message=f"🗨️ {player_id}: {request.message}")
+                    event = LogEvent(kind=LogKind.CHAT, messageKey="battlelog.event.chatMessage",
+                                     interpolationData={"player": player_id, "message": request.message})
 
                     await session.log_event(event)
 

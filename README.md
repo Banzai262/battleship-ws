@@ -248,8 +248,8 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 - [X] Match history
 - [ ] Statistics
 - [ ] Rate limiting and abuse protection
-- [ ] Multi languages support (probably next)
-- [ ] Mobile version
+- [X] Multi languages support
+- [ ] Mobile version (probably next)
 - [ ] There are still a few bugs to iron out
 
 

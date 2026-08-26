@@ -1,24 +1,89 @@
 {
-  "battle": {},
+  "battle": {
+    "banner": {
+      "enemyTurn": "⏳ En attente de votre adversaire...",
+      "yourTurn": "🟢 À votre tour ! Faites feu sur le plateau ennemi."
+    },
+    "boards": {
+      "enemy": "Plateau ennemi",
+      "yours": "Votre plateau"
+    }
+  },
+  "battlelog": {
+    "event": {
+      "allFleetsDeployed": "⚔️ Les flottes sont déployées, que la bataille commence !",
+      "allPlayersJoined": "🔔 Tous les joueurs sont présents. Il est temps de placer vos navires.",
+      "chatMessage": "🗨️ {{player}} : {{message}}",
+      "playerCreatedGame": "🟢 {{player}} a créé la partie.",
+      "playerFleetDeployed": "⚓ {{player}} a terminé de déployer sa flotte.",
+      "playerJoinedGame": "🔵 {{player}} a rejoint la partie.",
+      "shotFired": "🧨 {{player}} a tiré sur {{cell}}",
+      "shotOutcome": {
+        "hit": "🎯 TOUCHÉ",
+        "miss": "❌ MANQUÉ",
+        "sunk": "💥 COULÉ"
+      },
+      "winner": "🏆 Le joueur {{winner}} a remporté la partie !"
+    },
+    "placeholder": "Envoyer un message...",
+    "title": "Journal de bataille"
+  },
   "buttons": {
     "createGame": "Créer une partie",
-    "joinGame": "Rejoindre une partie"
+    "homescreen": "Retour à l'accueil",
+    "joinGame": "Rejoindre une partie",
+    "placeRandomly": "Placer les navires aléatoirement",
+    "playAgain": "Rejouer (Bientôt™)",
+    "ready": "Prêt",
+    "unselectShip": "Désélectionner le navire"
   },
   "createGame": {
     "codePlaceholder": "Code",
-    "haveCode": "Si vous avez un code de partie, entrez-le ci-dessous",
+    "haveCode": "Si vous avez déjà un code de partie, entrez-le ci-dessous",
     "namePlaceholder": "Nom du joueur",
-    "title": "Créer une nouvelle partie ou rejoindre une partie existente"
+    "title": "Créer une nouvelle partie ou rejoindre une partie existante"
   },
-  "gameOver": {},
-  "setup": {
+  "error": {
+    "wrongPlacement": "Le navire ne peut pas être placé ici"
+  },
+  "gameOver": {
     "banner": {
-      "shipSelected": "<0>{{ship}}</0> selected. Move your cursor over the board to preview its placement. A <1>green</1> preview indicates a valid position. Click to place the ship, or use <2>Rotate Ship</2> to change its orientation."
+      "loser": "L'ennemi a coulé votre flotte.",
+      "winner": "Vous avez coulé tous les navires ennemis."
     }
   },
+  "panels": {
+    "enemyFleet": {
+      "shipsSunk": "{{sunk}} / 5 navires coulés",
+      "title": "Flotte ennemie"
+    },
+    "shipStatus": {
+      "title": "Votre flotte"
+    },
+    "target": {
+      "clickToFire": "Cliquez sur une case ennemie pour tirer.",
+      "lastShot": "Dernier tir :",
+      "opponentIsChoosing": "L'adversaire choisit une cible.",
+      "target": "Cible :",
+      "title": "Ciblage",
+      "waiting": "⏳ En attente de votre adversaire..."
+    }
+  },
+  "setup": {
+    "banner": {
+      "fleetDeployed": "<1>Votre flotte est déployée !</1> Vérifiez le placement de vos navires, puis cliquez sur <2>Prêt</2> pour signaler que vous êtes prêt pour la bataille.",
+      "fleetDeployedAndWaiting": "<1>Votre flotte est déployée !</1> En attente de votre adversaire...",
+      "selectShipInstructions": "Sélectionnez un navire dans votre flotte pour commencer à le placer, ou cliquez sur <1>Placer les navires aléatoirement</1> pour déployer automatiquement votre flotte.",
+      "shipSelected": "<1>{{ship}}</1> sélectionné. Déplacez votre curseur sur le plateau pour prévisualiser son placement. Un aperçu <2>vert</2> indique une position valide. Cliquez pour placer le navire, ou utilisez <3>Tourner le navire</3> pour changer son orientation."
+    },
+    "fleetStatus": "Statut de la flotte",
+    "placeYourShips": "Placez vos navires",
+    "shipsPlaced": "navires placés",
+    "yourFleet": "Votre flotte"
+  },
   "waiting": {
-    "shareCode": "Partage ce code avec ton adversaire",
+    "shareCode": "Partagez ce code avec votre adversaire",
     "title": "Partie créée",
-    "waitingForOpponent": "En attente d'un adversaire"
+    "waitingForOpponent": "En attente de votre adversaire"
   }
 }

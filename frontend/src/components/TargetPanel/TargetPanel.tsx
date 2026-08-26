@@ -1,6 +1,7 @@
 import type {Coordinate} from "../../types/Coordinate.ts";
 import "./TargetPanel.css";
 import {type ShotOutcome, ShotOutcomeMap} from "../../types/ShotOutcome.ts";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     isMyTurn: boolean;
@@ -10,6 +11,8 @@ interface Props {
 }
 
 export default function (props: Props) {
+    const {t} = useTranslation();
+
     const shotToDisplay = (): string => {
         const result = ShotOutcomeMap(props.lastShotResult);
 
@@ -31,28 +34,28 @@ export default function (props: Props) {
 
     return (
         <div>
-            <h2>Targeting</h2>
+            <h2>{t("panels.target.title")}</h2>
 
             {!props.isMyTurn ? (
                 <>
-                    <p>⏳ Waiting for opponent...</p>
-                    <p>The opponent is choosing a target.</p>
+                    <p>{t("panels.target.waiting")}</p>
+                    <p>{t("panels.target.opponentIsChoosing")}</p>
                 </>
             ) : (
                 <>
                     <p>
-                        <strong>Target:</strong>{" "}
+                        <strong>{t("panels.target.target")}</strong>{" "}
                         {props.hoveredCell ? coordinateToString(props.hoveredCell) : "-"}
                     </p>
 
-                    <p>Click on an enemy cell to fire.</p>
+                    <p>{t("panels.target.clickToFire")}</p>
                 </>
             )}
 
             <hr/>
 
             <p>
-                <strong>Last shot:</strong>
+                <strong>{t("panels.target.lastShot")}</strong>
             </p>
 
             <p>{shotToDisplay()}</p>
