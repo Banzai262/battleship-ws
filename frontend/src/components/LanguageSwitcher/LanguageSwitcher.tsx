@@ -16,6 +16,3 @@ export default function LanguageSwitcher() {
         </div>
     );
 }
-
-// TODO changer le style du switcher pour que ça fit plus
-// aussi un drapeau queb genre 🇲🇶
