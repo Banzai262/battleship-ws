@@ -1,0 +1,89 @@
+{
+  "battle": {
+    "banner": {
+      "enemyTurn": "⏳ Waiting for your opponent...",
+      "yourTurn": "\uD83D\uDFE2 Your turn ! Fire at the enemy board."
+    },
+    "boards": {
+      "enemy": "Enemy board",
+      "yours": "Your board"
+    }
+  },
+  "battlelog": {
+    "event": {
+      "allFleetsDeployed": "⚔️ Fleets deployed, may the battle begins !",
+      "allPlayersJoined": "🔔 All players joined. Time to place your ships",
+      "chatMessage": "🗨️ {{player}}: {{message}}",
+      "playerCreatedGame": "🟢 {{player}} created the game.",
+      "playerFleetDeployed": "⚓ {{player}} is done deploying their fleet.",
+      "playerJoinedGame": "🔵 {{player}} joined the game.",
+      "shotFired": "🧨 {{player}} fired at {{cell}}",
+      "shotOutcome": {
+        "hit": "🎯 HIT",
+        "miss": "❌ MISS",
+        "sunk": "💥 SUNK"
+      },
+      "winner": "🏆 Player {{winner}} has won the game !"
+    },
+    "placeholder": "Send a message...",
+    "title": "Battle Log"
+  },
+  "buttons": {
+    "createGame": "Create Game",
+    "homescreen": "Back to Home",
+    "joinGame": "Join Game",
+    "placeRandomly": "Place ships randomly",
+    "playAgain": "Play Again (Coming Soon™)",
+    "ready": "Ready",
+    "unselectShip": "Unselect ship"
+  },
+  "createGame": {
+    "codePlaceholder": "Code",
+    "haveCode": "If you already have a game code, enter it below",
+    "namePlaceholder": "Player name",
+    "title": "Create a new game or join an existing game"
+  },
+  "error": {
+    "wrongPlacement": "Ship cannot be placed here"
+  },
+  "gameOver": {
+    "banner":{
+      "loser": "The enemy sank your fleet.",
+      "winner": "You sank all enemy ships."
+    }
+  },
+  "panels": {
+    "enemyFleet": {
+      "shipsSunk": "{{sunk}} / 5 ships sunk",
+      "title": "Enemy fleet"
+    },
+    "shipStatus": {
+      "title": "Your fleet"
+    },
+    "target": {
+      "clickToFire": "Click on an enemy cell to fire.",
+      "lastShot": "Last shot :",
+      "opponentIsChoosing": "The opponent is choosing a target.",
+      "target": "Target :",
+      "title": "Targeting",
+      "waiting": "⏳ Waiting for opponent..."
+    }
+  },
+  "setup": {
+    "banner": {
+      "fleetDeployed": "<1>Your fleet is deployed !</1> Review your ship placement, then click <2>Ready</2> to signal you're ready for battle.",
+      "fleetDeployedAndWaiting": "<1>Your fleet is deployed !</1> Waiting for opponent...",
+      "selectShipInstructions": "Select a ship from your fleet to begin placing it, or click <1>Place ships randomly</1> to automatically deploy your fleet.",
+      "shipSelected": "<1>{{ship}}</1> selected. Move your cursor over the board to preview its placement. A <2>green</2> preview indicates a valid position. Click to place the ship, or use <3>Rotate Ship</3> to change its orientation."
+    },
+    "fleetStatus": "Fleet Status",
+    "placeYourShips": "Place your ships",
+    "shipsPlaced": "ships placed",
+    "yourFleet": "Your fleet"
+  },
+  "waiting": {
+    "shareCode": "Share this code with your opponent",
+    "title": "Game Created",
+    "waitingForOpponent": "Waiting for opponent"
+  }
+}

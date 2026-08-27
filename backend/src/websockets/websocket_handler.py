@@ -241,6 +241,7 @@ async def websocket_json(ws: WebSocket):
                         await ws.send_json(ErrorResponse(message=result["message"]).model_dump(mode="json"))
                         continue
 
+                    # TODO mettre un objet dans le résultat, pour pouvoir le traduire facilement
                     await session.broadcast_state(result["result"])
 
                 case RequestTypes.GET_STATE:
@@ -251,7 +252,8 @@ async def websocket_json(ws: WebSocket):
 
                 case RequestTypes.CHAT:
                     request = ChatRequest(**data)
-                    event = LogEvent(kind=LogKind.CHAT, message=f"🗨️ {player_id}: {request.message}")
+                    event = LogEvent(kind=LogKind.CHAT, messageKey="battlelog.event.chatMessage",
+                                     interpolationData={"player": player_id, "message": request.message})
 
                     await session.log_event(event)
 

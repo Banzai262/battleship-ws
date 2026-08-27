@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     onCreate: (playerName: string) => void;
@@ -8,16 +9,17 @@ interface Props {
 export default function CreateGamePage({onCreate, onJoin}: Props) {
     const [playerName, setPlayerName] = useState('');
     const [code, setCode] = useState('');
-// TODO certainement revoir un peu la présentation
+
+    const {t} = useTranslation();
 
     return (
         <div>
-            <h2>Create a new game or join an existing game</h2>
+            <h2>{t("createGame.title")}</h2>
 
             <p>
                 <input
                     type="text"
-                    placeholder="Player name"
+                    placeholder={t("createGame.namePlaceholder")}
                     value={playerName}
                     onChange={(e) => setPlayerName(e.target.value)}
                 />
@@ -26,20 +28,20 @@ export default function CreateGamePage({onCreate, onJoin}: Props) {
                     onClick={() => onCreate(playerName)}
                     disabled={!(!code.trim() && playerName.trim())}
                 >
-                    Create Game
+                    {t("buttons.createGame")}
                 </button>
             </p>
 
             <p>
                 <text>
-                    If you already have a game code, enter it below
+                    {t("createGame.haveCode")}
                 </text>
             </p>
 
             <p>
                 <input
                     type="text"
-                    placeholder="Code"
+                    placeholder={t("createGame.codePlaceholder")}
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                 />
@@ -48,7 +50,7 @@ export default function CreateGamePage({onCreate, onJoin}: Props) {
                     onClick={() => onJoin(playerName, code)}
                     disabled={!(code.trim() && playerName.trim())}
                 >
-                    Join Game
+                    {t("buttons.joinGame")}
                 </button>
             </p>
         </div>

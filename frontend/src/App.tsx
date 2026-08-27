@@ -12,6 +12,7 @@ import BattlePage from "./pages/Battle/BattlePage.tsx";
 import GameOverPage from "./pages/GameOver/GameOverPage.tsx";
 import AppLayout from "./components/AppLayout/AppLayout.tsx";
 import type {LogEvent} from "./protocol/LogEvent.ts";
+import "./i18n/i18n.ts";
 
 const client = new BattleshipClient();
 

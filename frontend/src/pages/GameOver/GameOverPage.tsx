@@ -3,6 +3,7 @@ import ShipStatusPanel from "../../components/ShipStatusPanel/ShipStatusPanel.ts
 import "./GameOverPage.css";
 import BattleLog from "../../components/BattleLog/BattleLog.tsx";
 import type {LogEvent} from "../../protocol/LogEvent.ts";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     won: boolean;
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export default function GameOverPage(props: Props) {
+    const {t} = useTranslation();
+
     return (
         <div className="game-over-page">
 
@@ -24,8 +27,8 @@ export default function GameOverPage(props: Props) {
 
                 <p>
                     {props.won
-                        ? "You sank all enemy ships."
-                        : "The enemy sank your fleet."}
+                        ? t("gameOver.banner.winner")
+                        : t("gameOver.banner.loser")}
                 </p>
             </div>
 
@@ -35,11 +38,11 @@ export default function GameOverPage(props: Props) {
 
             <div className="game-over-actions">
                 <button onClick={props.onReplay}>
-                    Play Again (Coming Soon™)
+                    {t("buttons.playAgain")}
                 </button>
 
                 <button onClick={props.onBackHome}>
-                    Back to Home
+                    {t("buttons.homescreen")}
                 </button>
             </div>
 

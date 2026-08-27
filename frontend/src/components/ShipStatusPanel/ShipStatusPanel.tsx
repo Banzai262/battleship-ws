@@ -1,11 +1,14 @@
 import type {ShipStatus} from "../../models/ShipStatus.ts";
 import "./ShipStatusPanel.css";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     ships: ShipStatus[];
 }
 
 export default function ShipStatusPanel(props: Props) {
+    const {t} = useTranslation();
+
     function getHealthBar(ship: ShipStatus): string {
         return "░".repeat(ship.size - ship.health) + "█".repeat(ship.health);
     }
@@ -23,7 +26,7 @@ export default function ShipStatusPanel(props: Props) {
     return (
         <div className="ship-panel">
 
-            <h3>Your fleet</h3>
+            <h3>{t("panels.shipStatus.title")}</h3>
 
             {props.ships.map(ship => (
                 <div key={ship.name} className="ship-row">

@@ -8,6 +8,7 @@ import TargetPanel from "../../components/TargetPanel/TargetPanel.tsx";
 import EnemyFleetPanel from "../../components/EnemyFleetPanel/EnemyFleetPanel.tsx";
 import BattleLog from "../../components/BattleLog/BattleLog.tsx";
 import type {LogEvent} from "../../protocol/LogEvent.ts";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     state: GameState;
@@ -21,12 +22,14 @@ export default function BattlePage(props: Props) {
     const [hoveredCell, setHoveredCell] = useState<Coordinate | null>(null);
     const isMyTurn = props.state.currentPlayer === props.playerName;
 
+    const {t} = useTranslation();
+
     return (
         <div className="battle-page">
             <div className={`turn-banner ${isMyTurn ? "my-turn" : "opponent-turn"}`}>
                 {isMyTurn
-                    ? "🟢 Your turn! Fire at the enemy board."
-                    : "⏳ Waiting for your opponent..."}
+                    ? t("battle.banner.yourTurn")
+                    : t("battle.banner.enemyTurn")}
             </div>
 
             <div className="battle-grid">
@@ -35,7 +38,7 @@ export default function BattlePage(props: Props) {
                 </div>
 
                 <div className="panel">
-                    <h2>Your board</h2>
+                    <h2>{t("battle.boards.yours")}</h2>
                     <Board board={props.state.yourBoard} disableCells={true} showCoordinates={true}/>
                 </div>
 
@@ -51,7 +54,7 @@ export default function BattlePage(props: Props) {
                 </div>
 
                 <div className="panel">
-                    <h2>Enemy board</h2>
+                    <h2>{t("battle.boards.enemy")}</h2>
                     <Board board={props.state.enemyBoard}
                            disableCells={!isMyTurn}
                            showCoordinates={true}

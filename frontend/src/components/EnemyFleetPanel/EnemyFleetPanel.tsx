@@ -1,14 +1,19 @@
+import "./EnemyFleetPanel.css";
+import {Trans, useTranslation} from "react-i18next";
+
 interface Props {
     shipsSunk: number;
 }
 
 export default function EnemyFleetPanel (props: Props){
+    const {t} = useTranslation();
+
     return (
         <div className="enemy-fleet-panel">
 
             <hr/>
 
-            <h2>Enemy fleet</h2>
+            <h2>{t("panels.enemyFleet.title")}</h2>
 
             <div className="enemy-icons">
                 {Array.from({ length: 5 }, (_, i) => (
@@ -19,7 +24,7 @@ export default function EnemyFleetPanel (props: Props){
             </div>
 
             <div className="enemy-counter">
-                {props.shipsSunk} / 5 ships sunk
+                <Trans i18nKey="panels.enemyFleet.shipsSunk" values={{sunk: props.shipsSunk}}/>
             </div>
 
         </div>

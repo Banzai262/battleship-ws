@@ -13,4 +13,5 @@ class LogKind(str, Enum):
 class LogEvent(Response):
     type: ResponseTypes = ResponseTypes.LOG
     kind: LogKind
-    message: str
+    messageKey: str
+    interpolationData: dict = {}

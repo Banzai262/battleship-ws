@@ -1,17 +1,21 @@
+import {useTranslation} from "react-i18next";
+
 interface Props {
     gameCode: string;
 }
 
 export default function WaitingPage({ gameCode }: Props) {
+    const {t} = useTranslation();
+
     return (
         <div>
-            <h1>Game Created</h1>
+            <h1>{t("waiting.title")}</h1>
 
-            <p>Share this code with your opponent:</p>
+            <p>{t("waiting.shareCode")}:</p>
 
             <h2>{gameCode}</h2>
 
-            <p>Waiting for opponent...</p>
+            <p>{t("waiting.waitingForOpponent")}...</p>
         </div>
     );
 }
