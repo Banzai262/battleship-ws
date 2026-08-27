@@ -11,7 +11,6 @@ export default function CreateGamePage({onCreate, onJoin}: Props) {
     const [code, setCode] = useState('');
 
     const {t} = useTranslation();
-// TODO certainement revoir un peu la présentation et la taille des trucs quand on change la langue
 
     return (
         <div>
