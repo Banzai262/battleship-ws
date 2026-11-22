@@ -9,6 +9,7 @@ import type {ShipToPlace} from "../../types/ShipToPlace.ts";
 import {PreviewValidationService} from "../../services/PreviewValidationService.ts";
 import {CellState} from "../../types/CellState.ts";
 import {Trans, useTranslation} from "react-i18next";
+import {useMediaQuery} from "../../hooks/useMediaQuery.ts";
 
 interface Props {
     state: GameState;
@@ -38,7 +39,35 @@ export default function SetupPage(props: Props) {
 
     const [readyButtonClicked, setReadyButtonClicked] = useState<boolean>(false);
 
+    const isTouch = useMediaQuery("(hover: none)");
+
     const {t} = useTranslation();
+
+    function confirmPlacement() {
+        if (!selectedShip || !preview) return;
+
+        if (!previewValid) {
+            alert(t("error.wrongPlacement")); // TODO notification service
+            return;
+        }
+
+        setPlacedShips(old => [
+            ...old.filter(p => p.ship.name !== selectedShip.name),
+            {
+                ship: selectedShip,
+                row: preview.row,
+                col: preview.col,
+                horizontal: orientation === "horizontal"
+            }
+        ]);
+
+        previewCells.forEach(cell => {
+            props.state.yourBoard[cell[0]][cell[1]] = CellState.Ship;
+        });
+
+        setSelectedShip(null);
+        setPreview(null);
+    }
 
     function placeShips() {
         setReadyButtonClicked(true);
@@ -112,6 +141,7 @@ export default function SetupPage(props: Props) {
                     <div className="ship-panel">
                         <h3>{t("setup.yourFleet")}</h3>
 
+                        <div className="ship-list">
                         {props.state.ships.map(ship => {
                             const placed = placedShips.some(s => s.ship.name === ship.name);
                             const selected = selectedShip?.name === ship.name;
@@ -131,6 +161,7 @@ export default function SetupPage(props: Props) {
                                 </div>
                             );
                         })}
+                        </div>
 
                         <div className="fleet-status">
                             <div className="fleet-status-title">{t("setup.fleetStatus")}</div>
@@ -143,17 +174,31 @@ export default function SetupPage(props: Props) {
                         </div>
 
                         <div className="ship-actions">
+                            {isTouch && (
+                                <button className="confirm primary"
+                                        onClick={confirmPlacement}
+                                        disabled={!selectedShip || !preview || !previewValid}>
+                                    {t("buttons.confirmPlacement")}
+                                </button>
+                            )}
+
+                            <button onClick={() => setOrientation(o => o === "horizontal" ? "vertical" : "horizontal")}
+                                    disabled={!selectedShip}>
+                                {t("buttons.rotateShip")}
+                            </button>
                             <button onClick={() => setSelectedShip(null)}
-                                    disabled={!selectedShip}>{t("buttons.unselectShip")}</button>
+                                    disabled={!selectedShip}>
+                                {t("buttons.unselectShip")}
+                            </button>
+
                             <button onClick={placeShipsRandomly}
-                                    disabled={allShipsPlaced}>{t("buttons.placeRandomly")}</button>
-                            <button onClick={placeShips}
-                                    disabled={!allShipsPlaced || readyButtonClicked}>{t("buttons.ready")}</button>
-                            {/*TODO add support for R to rotate later*/}
-                            <button onClick={() => {
-                                setOrientation(o => o === "horizontal" ? "vertical" : "horizontal");
-                            }}
-                                    disabled={!selectedShip}>Rotate ship
+                                    disabled={allShipsPlaced}>
+                                {t("buttons.placeRandomly")}
+                            </button>
+                            <button className="primary"
+                                    onClick={placeShips}
+                                    disabled={!allShipsPlaced || readyButtonClicked}>
+                                {t("buttons.ready")}
                             </button>
                         </div>
                     </div>
@@ -162,42 +207,23 @@ export default function SetupPage(props: Props) {
                         <h2>{t("setup.placeYourShips")}</h2>
 
                         <Board board={props.state.yourBoard}
-                               disableCells={true}
                                showCoordinates={true}
                                placements={placedShips}
                                previewCells={previewCells}
                                occupiedCells={occupiedCells}
                                previewValid={previewValid}
-                               onMouseLeave={() => setPreview(null)}
-                               onCellHover={(r, c) => {
-                                   setPreview({row: r, col: c})
-                               }}
+                               onMouseLeave={isTouch ? undefined : () => setPreview(null)}
+                               onCellHover={isTouch ? undefined : (r, c) => setPreview({row: r, col: c})}
                                onCellClick={(r, c) => {
                                    if (!selectedShip) {
                                        return;
                                    }
 
-                                   if (!previewValid) {
-                                       // TODO at some point, notification service
-                                       alert(t("error.wrongPlacement"));
-                                       return;
+                                   if (isTouch) {
+                                       setPreview({row: r, col: c});   // tap = preview only
+                                   } else {
+                                       confirmPlacement();              // click = place, as before
                                    }
-
-                                   setPlacedShips(old => [
-                                       ...old.filter(p => p.ship.name !== selectedShip.name),
-                                       {
-                                           ship: selectedShip,
-                                           row: r,
-                                           col: c,
-                                           horizontal: orientation === "horizontal"
-                                       }
-                                   ]);
-
-                                   previewCells.forEach(cell => {
-                                       props.state.yourBoard[cell[0]][cell[1]] = CellState.Ship;
-                                   });
-
-                                   setSelectedShip(null);
                                }}
                         />
                     </div>

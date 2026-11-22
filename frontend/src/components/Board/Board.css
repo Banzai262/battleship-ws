@@ -1,42 +1,44 @@
-.board {
+.board-with-coordinates {
+    --cell-size: 40px;
+    --label-size: 30px;
+    --cell-gap: 2px;
+
     display: grid;
-    grid-template-columns: repeat(10, 40px);
-    grid-template-rows: repeat(10, 40px);
-    gap: 2px;
+    grid-template-columns: var(--label-size) auto var(--label-size);
+    grid-template-rows: var(--label-size) auto var(--label-size);
+    gap: 6px;
+
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
 }
 
-.board-with-coordinates {
+.board {
     display: grid;
-
-    grid-template-columns: 30px auto 30px;
-    grid-template-rows: 30px auto 30px;
-
-    gap: 6px;
+    grid-template-columns: repeat(10, var(--cell-size));
+    grid-template-rows: repeat(10, var(--cell-size));
+    gap: var(--cell-gap);
 }
 
 .column-labels {
     display: grid;
-
-    grid-template-columns: repeat(10, 40px);
-    gap: 2px;
+    grid-template-columns: repeat(10, var(--cell-size));
+    gap: var(--cell-gap);
 }
 
 .row-labels {
     display: grid;
-
-    grid-template-rows: repeat(10, 40px);
-    gap: 2px;
+    grid-template-rows: repeat(10, var(--cell-size));
+    gap: var(--cell-gap);
 }
 
 .label {
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     font-weight: bold;
     color: #333;
-    user-select: none;
 }
 
 .hidden {
@@ -44,6 +46,30 @@
 }
 
 .corner {
-    width: 30px;
-    height: 30px;
+    width: var(--label-size);
+    height: var(--label-size);
+}
+
+@media (max-width: 768px) {
+    .board-with-coordinates {
+        --label-size: 18px;
+        gap: 4px;
+
+        /* only two tracks now: labels + board */
+        grid-template-columns: var(--label-size) auto;
+        grid-template-rows: var(--label-size) auto;
+
+        /* Available width = viewport minus page padding (32px), panel padding
+           and border (~26px), one label column (18px), one grid gap (4px)
+           and the 9 gaps between cells (18px) = 98px, plus a little slack. */
+        --cell-size: min(40px, calc((100vw - 102px) / 10));
+    }
+
+    .board-end {
+        display: none;
+    }
+
+    .label {
+        font-size: 0.7rem;
+    }
 }

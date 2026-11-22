@@ -4,6 +4,38 @@
     align-items: flex-start;
 }
 
+/* ---- fleet picker card (moved here from ShipStatusPanel.css) ---- */
+.ship-panel {
+    width: 240px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.ship-panel h3 {
+    margin: 0 0 8px;
+    padding-bottom: 10px;
+
+    color: #222;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.ship-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .ship-placeholder {
     display: flex;
     align-items: center;
@@ -25,11 +57,6 @@
             background 0.15s,
             border-color 0.15s,
             transform 0.1s;
-}
-
-.ship-placeholder:hover:not(.placed) {
-    background: #f0f7ff;
-    border-color: #3b82f6;
 }
 
 .ship-placeholder.placed {
@@ -163,4 +190,118 @@
 .ready {
     background: #dbeafe;
     color: #1d4ed8;
+}
+
+/* hover styles only where hover exists: replace your existing rule with this */
+@media (hover: hover) {
+    .ship-placeholder:hover:not(.placed) {
+        background: #f0f7ff;
+        border-color: #3b82f6;
+    }
+}
+
+@media (max-width: 768px) {
+    .setup-container {
+        padding: 0 0 1rem;
+    }
+
+    .setup-banner {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 0;
+        margin: 0.5rem 0 1rem;
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+
+    .setup-page {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    /* extra specificity so it beats the other .ship-panel rule,
+       and reset the card look in case display: contents ever loses again */
+    .setup-page .ship-panel {
+        display: contents;
+        background: none;
+        border: 0;
+        padding: 0;
+        width: auto;
+        min-height: 0;
+    }
+
+    .ship-panel h3,
+    .fleet-status {
+        display: none;
+    }
+
+    .ship-list {
+        order: 1;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr)); /* minmax(0) lets columns shrink */
+        gap: 8px;
+    }
+
+    .ship-placeholder {
+        box-sizing: border-box;
+        min-width: 0;
+        height: auto;
+        min-height: 44px;
+        padding: 0 10px;
+        touch-action: manipulation;
+    }
+
+    .ship-placeholder span:last-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .panel {
+        order: 2;
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 0;
+        padding: 12px;
+    }
+
+    .ship-actions {
+        order: 3;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 0;
+        padding-top: 12px;
+        border-top-color: var(--border, #23693a);
+    }
+
+    .ship-actions button {
+        box-sizing: border-box;
+        min-height: 44px;
+        padding: 0 12px;
+        font: inherit;
+        font-size: 0.95rem;
+        line-height: 1.2;
+        border-radius: 8px;
+        border: 1px solid var(--border-bright, #38d75b);
+        background: var(--panel-light, #13311c);
+        color: var(--text, #edfcef);
+        touch-action: manipulation;
+    }
+
+    .ship-actions button.primary {
+        background: var(--accent-dark, #24b347);
+        border-color: var(--accent, #42ff64);
+        color: #04120a;
+        font-weight: 700;
+    }
+
+    .ship-actions button.confirm {
+        grid-column: 1 / -1;    /* full width */
+    }
+
+    .ship-actions button:disabled {
+        opacity: 0.4;
+    }
 }

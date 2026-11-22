@@ -11,7 +11,7 @@ interface Props {
     placements?: ShipToPlace[];
     occupiedCells?: Coordinate[];
     previewValid?: boolean;
-    disableCells: boolean;
+    targetable?: boolean;
     showCoordinates: boolean;
     onCellClick?: (row: number, col: number) => void;
     onCellHover?: (row: number, col: number) => void;
@@ -27,7 +27,7 @@ export default function Board(props: Props) {
                         key={`${rowIndex}-${colIndex}`}
                         isPreview={props.previewCells?.some(c => c[0] === rowIndex && c[1] === colIndex) ? props.previewValid ? "valid" : "invalid" : undefined}
                         isPlaced={props.previewCells && props.occupiedCells ? props.occupiedCells.some(c => c[0] === rowIndex && c[1] === colIndex) : false}
-                        disabled={props.disableCells}
+                        targetable={props.targetable}
                         cell={cell}
                         onClick={() => props.onCellClick?.(rowIndex, colIndex)}
                         onMouseEnter={() => props.onCellHover?.(rowIndex, colIndex)}
@@ -48,7 +48,7 @@ export default function Board(props: Props) {
                 )}
             </div>
 
-            <div className="corner"/>
+            <div className="corner board-end"/>
 
             <div className="row-labels">
                 {Array.from({length: 10}, (_, i) =>
@@ -60,7 +60,7 @@ export default function Board(props: Props) {
                 {renderCells()}
             </div>
 
-            <div className="row-labels">
+            <div className="row-labels board-end">
                 {Array.from({length: 10}, (_, i) =>
                     <div key={i} className={`label ${props.showCoordinates ? "" : "hidden"}`}>{i + 1}</div>
                 )}
@@ -74,7 +74,7 @@ export default function Board(props: Props) {
                 )}
             </div>
 
-            <div className="corner"/>
+            <div className="corner board-end"/>
         </div>
     );
 }

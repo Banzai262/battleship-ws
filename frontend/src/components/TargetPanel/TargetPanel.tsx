@@ -2,6 +2,7 @@ import type {Coordinate} from "../../types/Coordinate.ts";
 import "./TargetPanel.css";
 import {type ShotOutcome, ShotOutcomeMap} from "../../types/ShotOutcome.ts";
 import {useTranslation} from "react-i18next";
+import {useMediaQuery} from "../../hooks/useMediaQuery.ts";
 
 interface Props {
     isMyTurn: boolean;
@@ -12,6 +13,7 @@ interface Props {
 
 export default function (props: Props) {
     const {t} = useTranslation();
+    const isTouch = useMediaQuery("(hover: none)");
 
     const shotToDisplay = (): string => {
         const result = ShotOutcomeMap(props.lastShotResult);
@@ -20,9 +22,8 @@ export default function (props: Props) {
             return result;
         }
 
-        return `${ShotOutcomeMap(props.lastShotResult)} by player ${props.lastPlayer}`
+        return t("panels.target.shotBy", {result, player: props.lastPlayer});
     }
-
 
     const coordinateToString = (coordinate: Coordinate): string => {
         const [row, col] = coordinate;
@@ -33,7 +34,7 @@ export default function (props: Props) {
     }
 
     return (
-        <div>
+        <div className="target-panel">
             <h2>{t("panels.target.title")}</h2>
 
             {!props.isMyTurn ? (
@@ -48,7 +49,7 @@ export default function (props: Props) {
                         {props.hoveredCell ? coordinateToString(props.hoveredCell) : "-"}
                     </p>
 
-                    <p>{t("panels.target.clickToFire")}</p>
+                    <p>{t("panels.target.clickToFire", {context: isTouch ? "touch" : undefined})}</p>
                 </>
             )}
 

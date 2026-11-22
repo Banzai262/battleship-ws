@@ -145,3 +145,169 @@
 .chat-input button:active {
     transform: translateY(1px);
 }
+
+/* mobile-only elements are hidden on desktop */
+.battle-log-tab,
+.battle-log-backdrop,
+.battle-log-close {
+    display: none;
+}
+
+.battle-log-header {
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    /* ---- the drawer ---- */
+    .battle-log {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 1100;
+
+        box-sizing: border-box;
+        width: min(100vw, 400px);
+        height: 100dvh;
+        margin: 0;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+
+        border-right: none;
+        border-radius: 8px 0 0 8px;
+
+        /* closed: off-screen and removed from tab order / screen readers */
+        transform: translateX(100%);
+        visibility: hidden;
+        transition: transform 0.25s ease, visibility 0s linear 0.25s;
+    }
+
+    .battle-log.open {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.25s ease;
+    }
+
+    .battle-log-content {
+        min-height: 0;          /* lets the flex child scroll instead of growing */
+        overscroll-behavior: contain;
+    }
+
+    .entry {
+        font-size: 0.9rem;
+        overflow-wrap: anywhere;
+    }
+
+    /* ---- the side tab ---- */
+    .battle-log-tab {
+        position: fixed;
+        right: env(safe-area-inset-right);
+        top: 55%;
+        z-index: 1000;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 28px;
+        height: 64px;
+        padding: 0;
+
+        border: 1px solid var(--border-bright, #38d75b);
+        border-right: none;
+        border-radius: 8px 0 0 8px;
+
+        background: var(--panel-light, #13311c);
+        color: var(--accent, #42ff64);
+        font-size: 1rem;
+
+        box-shadow: 0 0 10px var(--glow, rgba(66, 255, 100, 0.35));
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .battle-log-badge {
+        position: absolute;
+        top: -8px;
+        left: -10px;
+
+        min-width: 18px;
+        height: 18px;
+        padding: 0 4px;
+        box-sizing: border-box;
+
+        border-radius: 9px;
+        background: #ff4d4d;
+        color: white;
+
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 18px;
+        text-align: center;
+    }
+
+    /* ---- dimmed backdrop ---- */
+    .battle-log-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1050;
+
+        background: rgba(0, 0, 0, 0.55);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+    }
+
+    .battle-log-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* ---- close button inside the header ---- */
+    .battle-log-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        position: absolute;
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        width: 44px;
+        height: 44px;
+        padding: 0;
+
+        border: none;
+        background: transparent;
+        color: var(--text, #edfcef);
+        font-size: 1.2rem;
+        touch-action: manipulation;
+    }
+
+    /* ---- input row ---- */
+    .chat-input input {
+        min-width: 0;
+        font-size: 16px;      /* below 16px, iOS zooms the page on focus */
+        min-height: 44px;
+        box-sizing: border-box;
+    }
+
+    .chat-input button {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    /* hover lift sticks after a tap on touch screens */
+    .chat-input button:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .battle-log,
+    .battle-log-backdrop {
+        transition: none;
+    }
+}

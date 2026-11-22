@@ -7,7 +7,9 @@
     "boards": {
       "enemy": "Enemy board",
       "yours": "Your board"
-    }
+    },
+    "fireAt": "Fire at {{cell}}",
+    "selectTarget": "Tap a cell to aim"
   },
   "battlelog": {
     "event": {
@@ -29,12 +31,14 @@
     "title": "Battle Log"
   },
   "buttons": {
+    "confirmPlacement": "Place ship there",
     "createGame": "Create Game",
     "homescreen": "Back to Home",
     "joinGame": "Join Game",
     "placeRandomly": "Place ships randomly",
     "playAgain": "Play Again (Coming Soon™)",
     "ready": "Ready",
+    "rotateShip": "Rotate ship",
     "unselectShip": "Unselect ship"
   },
   "createGame": {
@@ -62,8 +66,10 @@
     },
     "target": {
       "clickToFire": "Click on an enemy cell to fire.",
+      "clickToFire_touch": "Tap a cell to aim, then press Fire.",
       "lastShot": "Last shot :",
       "opponentIsChoosing": "The opponent is choosing a target.",
+      "shotBy": "{{result}} by player {{player}}",
       "target": "Target :",
       "title": "Targeting",
       "waiting": "⏳ Waiting for opponent..."

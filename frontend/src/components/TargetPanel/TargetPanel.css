@@ -6,3 +6,13 @@
 .panel hr {
     margin: 20px 0;
 }
+
+@media (max-width: 768px) {
+    .target-panel p {
+        margin: 4px 0;
+    }
+
+    .target-panel hr {
+        margin: 10px 0;
+    }
+}

@@ -7,7 +7,9 @@
     "boards": {
       "enemy": "Plateau ennemi",
       "yours": "Votre plateau"
-    }
+    },
+    "fireAt": "Tirer sur {{cell}}",
+    "selectTarget": "Toucher une case pour viser"
   },
   "battlelog": {
     "event": {
@@ -29,12 +31,14 @@
     "title": "Journal de bataille"
   },
   "buttons": {
+    "confirmPlacement": "Placer ici",
     "createGame": "Créer une partie",
     "homescreen": "Retour à l'accueil",
     "joinGame": "Rejoindre une partie",
     "placeRandomly": "Placer les navires aléatoirement",
     "playAgain": "Rejouer (Bientôt™)",
     "ready": "Prêt",
+    "rotateShip": "Pivoter le bateau",
     "unselectShip": "Désélectionner le navire"
   },
   "createGame": {
@@ -62,8 +66,10 @@
     },
     "target": {
       "clickToFire": "Cliquez sur une case ennemie pour tirer.",
+      "clickToFire_touch": "Touchez une case pour viser, puis appuyer sur Tirer.",
       "lastShot": "Dernier tir :",
       "opponentIsChoosing": "L'adversaire choisit une cible.",
+      "shotBy": "{{result}} par le joueur {{player}}",
       "target": "Cible :",
       "title": "Ciblage",
       "waiting": "⏳ En attente de votre adversaire..."

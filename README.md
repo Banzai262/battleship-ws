@@ -234,7 +234,7 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 - [X] In-game chat
 - [X] Random placing of ships
 - [X] Automatic build pipeline
-- [ ] Persistent game storage (Redis or database)
+- [ ] Persistent game storage (Redis or database) (probably next)
 - [ ] Spectator mode
 - [ ] Multiple simultaneous games per user
 - [ ] Authentication (JWT or sessions)
@@ -249,7 +249,7 @@ The battleship server itself remains protocol-agnostic and unaware of the extern
 - [ ] Statistics
 - [ ] Rate limiting and abuse protection
 - [X] Multi languages support
-- [ ] Mobile version (probably next)
+- [X] Mobile version
 - [ ] There are still a few bugs to iron out
 
 

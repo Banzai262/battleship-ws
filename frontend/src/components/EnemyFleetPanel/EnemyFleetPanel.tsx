@@ -3,6 +3,7 @@ import {Trans, useTranslation} from "react-i18next";
 
 interface Props {
     shipsSunk: number;
+    totalShips: number;
 }
 
 export default function EnemyFleetPanel (props: Props){
@@ -15,11 +16,9 @@ export default function EnemyFleetPanel (props: Props){
 
             <h2>{t("panels.enemyFleet.title")}</h2>
 
-            <div className="enemy-icons">
-                {Array.from({ length: 5 }, (_, i) => (
-                    <span key={i}>
-                {i < props.shipsSunk ? "💥" : "⚪"}
-            </span>
+            <div className="enemy-icons" aria-hidden="true">
+                {Array.from({length: props.totalShips}, (_, i) => (
+                    <span key={i}>{i < props.shipsSunk ? "💥" : "⚪"}</span>
                 ))}
             </div>
 
