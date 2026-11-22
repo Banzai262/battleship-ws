@@ -1,4 +1,4 @@
-.ship-panel {
+.ship-status-panel {
     width: 240px;
 
     display: flex;
@@ -15,32 +15,51 @@
     box-sizing: border-box;
 }
 
-.ship-panel h3 {
+.ship-status-panel h3 {
     margin: 0 0 8px 0;
+    padding-bottom: 10px;
 
     color: #222;
     font-size: 1.3rem;
     font-weight: 700;
-
     text-align: center;
-
-    padding-bottom: 10px;
 }
 
-.ship-row {
+.ship-status-row {
     display: grid;
     grid-template-columns: 28px 1fr auto;
-
     align-items: center;
     gap: 10px;
 }
 
-.ship-name {
+.ship-status-name {
     font-weight: 600;
     color: #222;
 }
 
-.ship-health {
+.ship-status-health {
     font-family: monospace;
     letter-spacing: 2px;
+}
+
+@media (max-width: 768px) {
+    .ship-status-panel {
+        width: 100%;
+        gap: 6px;
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+    }
+
+    .ship-status-panel h3 {
+        margin: 0 0 4px;
+        padding-bottom: 0;
+        font-size: 1.15rem;
+    }
+
+    .ship-status-row {
+        grid-template-columns: 24px 1fr auto;
+        gap: 8px;
+    }
 }

@@ -5,7 +5,7 @@ interface Props {
     cell: CellState;
     isPreview?: "valid" | "invalid";
     isPlaced: boolean;
-    disabled: boolean
+    targetable?: boolean
     onClick?: () => void;
     onMouseEnter?: () => void;
 }
@@ -13,7 +13,7 @@ interface Props {
 export default function CellComponent(props: Props) {
     return (
         <button
-            className={`cell ${props.disabled ? "disabled" : "clickable"} ${props.isPlaced ? "placed" : ""} ${props.isPreview ? `preview ${props.isPreview}` : ""}`}
+            className={`cell ${props.targetable ? "targetable" : ""} ${props.isPlaced ? "placed" : ""} ${props.isPreview ? `preview ${props.isPreview}` : ""}`}
             onClick={props.onClick}
             onMouseEnter={props.onMouseEnter}>
             {CellMap(props.cell)}

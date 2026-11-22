@@ -37,7 +37,7 @@ export default function GameOverPage(props: Props) {
             </div>
 
             <div className="game-over-actions">
-                <button onClick={props.onReplay}>
+                <button className="primary" onClick={props.onReplay}>
                     {t("buttons.playAgain")}
                 </button>
 

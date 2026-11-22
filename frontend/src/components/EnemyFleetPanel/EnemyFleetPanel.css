@@ -8,6 +8,7 @@
 .enemy-icons {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 10px;
 
     font-size: 1.8rem;
@@ -19,4 +20,24 @@
     text-align: center;
     font-weight: bold;
     color: #333;
+}
+
+@media (max-width: 768px) {
+    /* the parent .panel is already the card, so drop the inner one */
+    .enemy-fleet-panel {
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        background: transparent;
+    }
+
+    .enemy-fleet-panel hr {
+        margin: 10px 0;
+    }
+
+    .enemy-icons {
+        gap: 8px;
+        font-size: 1.5rem;
+        margin: 8px 0;
+    }
 }

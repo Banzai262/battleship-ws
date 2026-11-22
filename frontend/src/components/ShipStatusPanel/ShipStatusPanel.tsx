@@ -24,23 +24,25 @@ export default function ShipStatusPanel(props: Props) {
     }
 
     return (
-        <div className="ship-panel">
+        <div className="ship-status-panel">
 
             <h3>{t("panels.shipStatus.title")}</h3>
 
             {props.ships.map(ship => (
-                <div key={ship.name} className="ship-row">
-                    <span className="ship-icon">
-                        {getIcon(ship)}
-                    </span>
+                <div key={ship.name} className="ship-status-row">
+                <span className="ship-status-icon" aria-hidden="true">
+                    {getIcon(ship)}
+                </span>
 
-                    <span className="ship-name">
-                        {ship.name}
-                    </span>
+                    <span className="ship-status-name">
+                    {ship.name}
+                </span>
 
-                    <span className="ship-health">
-                        {getHealthBar(ship)}
-                    </span>
+                    <span className="ship-status-health"
+                          role="img"
+                          aria-label={`${ship.health}/${ship.size}`}>
+                    {getHealthBar(ship)}
+                </span>
                 </div>
             ))}
 

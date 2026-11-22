@@ -7,9 +7,12 @@
     margin-bottom: 30px;
 }
 
-.panel:first-child,
-.panel:nth-child(3) {
+.panel--side {
     width: 300px;
+}
+
+.fire-bar {
+    display: none;
 }
 
 .battle-grid {
@@ -56,4 +59,74 @@
 .opponent-turn {
     background: #fef3c7;
     color: #92400e;
+}
+
+@media (max-width: 768px) {
+    .battle-page {
+        padding: 0 0 1rem;          /* AppLayout already pads the sides */
+    }
+
+    .turn-banner {
+        position: sticky; top: 0;
+        box-sizing: border-box;
+        width: 100%;
+        margin: 0.5rem 0 1rem;
+        padding: 10px 12px;
+        font-size: 1rem;
+    }
+
+    .battle-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .battle-grid > .panel {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 0;
+        padding: 12px;
+    }
+
+    /* the enemy board is where you act, so it goes first */
+    .panel--enemy  { order: 1; }
+    .panel--target { order: 2; }
+    .panel--yours  { order: 3; }
+    .panel--status { order: 4; }
+
+    .panel h2 {
+        font-size: 1.15rem;
+        margin-bottom: 10px;
+    }
+
+    .battle-grid .board-with-coordinates {
+        justify-content: center;
+    }
+
+    /* sticky fire button, always reachable without scrolling */
+    .fire-bar {
+        display: block;
+        position: sticky;
+        bottom: 0;
+        z-index: 900;                /* below the battle log tab (1000) and drawer (1100) */
+        padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+        background: linear-gradient(transparent, var(--bg, #07130b) 35%);
+    }
+
+    .fire-bar button {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 52px;
+        font: inherit;
+        font-weight: 700;
+        border-radius: 8px;
+        border: 1px solid var(--accent, #42ff64);
+        background: var(--accent-dark, #24b347);
+        color: #04120a;
+        touch-action: manipulation;
+    }
+
+    .fire-bar button:disabled {
+        opacity: 0.5;
+    }
 }
